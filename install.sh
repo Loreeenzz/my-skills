@@ -5,7 +5,7 @@ set -e
 # my-skills installer / sync script
 # Symlinks skills to your global agent or local project directory
 # Supported targets:
-#   - antigravity / gemini: ~/.gemini/config/skills or <project>/.agents/skills
+#   - antigravity / gemini / opencode: ~/.gemini/config/skills or <project>/.agents/skills
 #   - claude: ~/.claude/skills
 #   - cursor: ~/.cursor/rules
 # ==============================================================================
@@ -26,6 +26,7 @@ show_help() {
 }
 
 TARGET_DIR=""
+PROJECT_ROOT=""
 
 case "$1" in
   --project)
@@ -33,6 +34,7 @@ case "$1" in
       echo "Error: --project requires a directory argument."
       exit 1
     fi
+    PROJECT_ROOT="$2"
     TARGET_DIR="$2/.agents/skills"
     ;;
   --claude)
@@ -66,6 +68,14 @@ for skill in "$SKILLS_DIR"/*; do
     echo "  [✓] Linked skill: $skill_name -> $dest"
   fi
 done
+
+# If installing into prospect, maintain backward compatibility alias for verify-ai-setup
+if [ -n "$PROJECT_ROOT" ] && [[ "$PROJECT_ROOT" == *"prospect"* ]]; then
+  if [ -d "$TARGET_DIR/git-commit-message" ] && [ ! -e "$TARGET_DIR/prospect-commit-message" ]; then
+    ln -sfn git-commit-message "$TARGET_DIR/prospect-commit-message"
+    echo "  [✓] Linked backward-compat alias: prospect-commit-message -> git-commit-message"
+  fi
+fi
 
 echo ""
 echo "Installation complete!"
