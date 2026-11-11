@@ -70,10 +70,15 @@ for skill in "$SKILLS_DIR"/*; do
 done
 
 # If installing into prospect, maintain backward compatibility alias for verify-ai-setup
+# and link OpenCode's native search directory (.opencode/skills -> .agents/skills)
 if [ -n "$PROJECT_ROOT" ] && [[ "$PROJECT_ROOT" == *"prospect"* ]]; then
   if [ -d "$TARGET_DIR/git-commit-message" ] && [ ! -e "$TARGET_DIR/prospect-commit-message" ]; then
     ln -sfn git-commit-message "$TARGET_DIR/prospect-commit-message"
     echo "  [✓] Linked backward-compat alias: prospect-commit-message -> git-commit-message"
+  fi
+  if [ -d "$PROJECT_ROOT/.opencode" ]; then
+    ln -sfn ../.agents/skills "$PROJECT_ROOT/.opencode/skills"
+    echo "  [✓] Linked OpenCode native path: .opencode/skills -> .agents/skills"
   fi
 fi
 
