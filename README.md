@@ -1,6 +1,6 @@
 # my-skills
 
-A centralized, version-controlled collection of custom AI agent skills compatible with **Google Antigravity**, **Claude Code**, and **Cursor**.
+A centralized, version-controlled collection of custom AI agent skills compatible with **Google Antigravity**, **Claude Code**, **OpenCode**, and **Cursor**.
 
 ## Repository Structure
 
@@ -15,7 +15,9 @@ my-skills/
 │   │   ├── SKILL.md
 │   │   └── references/
 │   │       └── coverage.md
-│   └── prospect-standards-review/
+│   ├── prospect-standards-review/
+│   │   └── SKILL.md
+│   └── session-handoff/
 │       └── SKILL.md
 ├── install.sh
 └── README.md
@@ -23,6 +25,7 @@ my-skills/
 
 ## Available Skills
 
+- **`session-handoff`**: Manages session continuity across chats. Generates a structured `HANDOFF.md` before starting a fresh chat, or resumes work instantly without context rot.
 - **`git-commit-message`**: Evaluates git changes and generates clean, concise Conventional Commit messages and bullet summaries (advisory only).
 - **`prospect-standards-implement`**: Implements features and bug fixes against Prospect Analyzer architecture and coding standards (Angular 22 OnPush/Signals, FastAPI, BEM/Tailwind).
 - **`prospect-standards-migrate`**: Fully migrates existing files to complete repository coding standards compliance.
