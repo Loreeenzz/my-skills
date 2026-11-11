@@ -7,7 +7,15 @@ A centralized, version-controlled collection of custom AI agent skills compatibl
 ```text
 my-skills/
 ├── skills/
-│   └── git-commit-message/
+│   ├── git-commit-message/
+│   │   └── SKILL.md
+│   ├── prospect-standards-implement/
+│   │   └── SKILL.md
+│   ├── prospect-standards-migrate/
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       └── coverage.md
+│   └── prospect-standards-review/
 │       └── SKILL.md
 ├── install.sh
 └── README.md
@@ -16,6 +24,9 @@ my-skills/
 ## Available Skills
 
 - **`git-commit-message`**: Evaluates git changes and generates clean, concise Conventional Commit messages and bullet summaries (advisory only).
+- **`prospect-standards-implement`**: Implements features and bug fixes against Prospect Analyzer architecture and coding standards (Angular 22 OnPush/Signals, FastAPI, BEM/Tailwind).
+- **`prospect-standards-migrate`**: Fully migrates existing files to complete repository coding standards compliance.
+- **`prospect-standards-review`**: Performs read-only code review verifying implementations against standards, accessibility, contracts, and tests.
 
 ## Installation & Syncing
 
@@ -57,14 +68,3 @@ Symlink into any project repository so your workspace agent picks it up under `<
    ```
 3. Run `./install.sh` to update your links.
 4. Commit and push to GitHub!
-
-## Pushing to GitHub
-
-```bash
-git init
-git add .
-git commit -m "feat: initial commit for agent skills repository"
-git branch -M main
-git remote add origin https://github.com/<your-username>/my-skills.git
-git push -u origin main
-```
