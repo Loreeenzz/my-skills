@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Skills Vault | Loreeenzz</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <!-- Marked for markdown preview -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#22c55e',
+              600: '#16a34a',
+            },
+            zinc: {
+              850: '#1e1e24',
+              900: '#121216',
+              950: '#09090b',
+            }
+          },
+          fontFamily: {
+            mono: ['JetBrains Mono', 'Menlo', 'monospace'],
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    [x-cloak] { display: none !important; }
+    .glow-border {
+      position: relative;
+    }
+    .glow-border::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(to bottom right, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .prose-custom pre {
+      background: #0d0e12;
+      border: 1px solid #27272a;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      color: #e4e4e7;
+      overflow-x: auto;
+    }
+    .prose-custom code {
+      color: #4ade80;
+      background: rgba(34, 197, 94, 0.1);
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+    .prose-custom h1, .prose-custom h2, .prose-custom h3 {
+      color: #f4f4f5;
+      font-weight: 700;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+    .prose-custom p, .prose-custom li {
+      color: #a1a1aa;
+      line-height: 1.7;
+    }
+    .prose-custom ul {
+      list-style-type: disc;
+      padding-left: 1.25rem;
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased selection:bg-brand-500/20 selection:text-brand-500" x-data="skillsApp()" x-init="initApp()">
+
+  <!-- Ambient Glow Effects -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-brand-500/10 via-brand-500/0 to-transparent blur-3xl pointer-events-none -z-10"></div>
+
+  <!-- Header -->
+  <header class="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-emerald-700 flex items-center justify-center font-bold text-zinc-950 shadow-lg shadow-brand-500/20">
+          <i data-lucide="sparkles" class="w-5 h-5 text-zinc-950"></i>
+        </div>
+        <div>
+          <span class="font-bold text-base tracking-tight flex items-center gap-2">
+            Agent Skills Vault
+            <span class="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">v1.0</span>
+          </span>
+          <p class="text-xs text-zinc-500 font-mono">Compatible with Antigravity • Claude Code • OpenCode</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <a href="https://github.com/Loreeenzz/my-skills" target="_blank" class="text-xs bg-zinc-900 hover:bg-zinc-850 hover:text-white transition px-3 py-1.5 rounded-lg border border-zinc-800 flex items-center gap-2 text-zinc-300">
+          <i data-lucide="github" class="w-4 h-4"></i>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="max-w-7xl mx-auto px-6 pt-12 pb-8">
+    <div class="max-w-3xl space-y-4">
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+        Personal AI Agent <br class="hidden sm:inline">
+        <span class="bg-gradient-to-r from-emerald-400 via-brand-500 to-teal-400 bg-clip-text text-transparent">Skills & Workflows</span>
+      </h1>
+      <p class="text-zinc-400 text-sm md:text-base leading-relaxed">
+        Standardized, portable capabilities designed for progressive disclosure across coding assistants. Fully version-controlled and auto-synced across machines.
+      </p>
+
+      <!-- Quick Install Box -->
+      <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <div class="flex-1 bg-zinc-900/90 border border-zinc-800 rounded-xl px-4 py-2.5 flex items-center justify-between font-mono text-xs text-zinc-300 shadow-inner">
+          <div class="flex items-center gap-2 truncate">
+            <span class="text-emerald-400 select-none">$</span>
+            <span class="truncate">git clone https://github.com/Loreeenzz/my-skills.git && ./my-skills/install.sh</span>
+          </div>
+          <button @click="copyText('git clone https://github.com/Loreeenzz/my-skills.git && cd my-skills && ./install.sh --global', 'main-clone')" class="ml-3 p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition">
+            <i data-lucide="copy" class="w-4 h-4" x-show="copiedId !== 'main-clone'"></i>
+            <i data-lucide="check" class="w-4 h-4 text-emerald-400" x-show="copiedId === 'main-clone'" x-cloak></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Metrics Bento -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-zinc-900 font-mono">
+      <div class="bg-zinc-900/40 border border-zinc-850 rounded-xl p-4">
+        <span class="text-xs text-zinc-500 uppercase tracking-wider block">Total Skills</span>
+        <span class="text-2xl font-bold text-white mt-1 block" x-text="skills.length">5</span>
+      </div>
+      <div class="bg-zinc-900/40 border border-zinc-850 rounded-xl p-4">
+        <span class="text-xs text-zinc-500 uppercase tracking-wider block">Standard</span>
+        <span class="text-sm font-semibold text-emerald-400 mt-2 block">agentskills.io</span>
+      </div>
+      <div class="bg-zinc-900/40 border border-zinc-850 rounded-xl p-4">
+        <span class="text-xs text-zinc-500 uppercase tracking-wider block">Architecture</span>
+        <span class="text-sm font-semibold text-zinc-300 mt-2 block">Zero-Copy Symlink</span>
+      </div>
+      <div class="bg-zinc-900/40 border border-zinc-850 rounded-xl p-4">
+        <span class="text-xs text-zinc-500 uppercase tracking-wider block">Sync State</span>
+        <span class="text-sm font-semibold text-emerald-400 mt-2 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Live in Sync
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Showcase Grid & Filters -->
+  <main class="max-w-7xl mx-auto px-6 py-6 pb-24">
+    <!-- Controls Bar -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <!-- Category Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+        <template x-for="cat in categories" :key="cat">
+          <button @click="selectedCategory = cat" 
+            :class="selectedCategory === cat ? 'bg-zinc-100 text-zinc-950 font-semibold shadow-md' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-850 border border-zinc-800'"
+            class="px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition-all duration-150">
+            <span x-text="cat"></span>
+          </button>
+        </template>
+      </div>
+
+      <!-- Search Input -->
+      <div class="relative min-w-[280px]">
+        <i data-lucide="search" class="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+        <input type="text" x-model="searchQuery" placeholder="Search skills, triggers, standards..." 
+          class="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-9 pr-4 py-2 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition">
+        <button x-show="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300">
+          <i data-lucide="x" class="w-3.5 h-3.5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Skills Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <template x-for="skill in filteredSkills" :key="skill.id">
+        <div class="bg-zinc-900/60 border border-zinc-800/80 hover:border-zinc-700 rounded-2xl p-6 transition-all duration-200 hover:shadow-xl hover:shadow-black/40 flex flex-col justify-between group glow-border">
+          <div class="space-y-4">
+            <!-- Header Badges -->
+            <div class="flex items-start justify-between gap-2">
+              <span class="text-[10px] font-mono uppercase tracking-wider font-semibold px-2.5 py-1 rounded-md bg-zinc-800 text-zinc-400 border border-zinc-750" x-text="skill.category"></span>
+              <span class="text-xs font-mono text-zinc-600 flex items-center gap-1">
+                <i data-lucide="terminal" class="w-3 h-3"></i>
+                SKILL.md
+              </span>
+            </div>
+
+            <!-- Skill Name & Trigger Description -->
+            <div>
+              <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center gap-2">
+                <span x-text="skill.name"></span>
+              </h3>
+              <p class="text-xs text-zinc-400 line-clamp-3 mt-2 leading-relaxed" x-text="skill.description"></p>
+            </div>
+          </div>
+
+          <!-- Action Footers -->
+          <div class="pt-6 mt-6 border-t border-zinc-850/80 flex items-center justify-between gap-2">
+            <button @click="openModal(skill)" class="text-xs text-zinc-400 hover:text-white font-medium flex items-center gap-1.5 transition">
+              <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+              View Spec
+            </button>
+            <div class="flex items-center gap-2">
+              <button @click="copyText('@' + skill.name, skill.id + '-trigger')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800/90 hover:bg-zinc-750 text-zinc-300 hover:text-white border border-zinc-700/60 text-xs font-mono flex items-center gap-1.5 transition shadow-sm">
+                <span x-text="'@' + skill.name"></span>
+                <i data-lucide="copy" class="w-3 h-3 text-zinc-400" x-show="copiedId !== skill.id + '-trigger'"></i>
+                <i data-lucide="check" class="w-3 h-3 text-emerald-400" x-show="copiedId === skill.id + '-trigger'" x-cloak></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Empty State -->
+    <div x-show="filteredSkills.length === 0" class="text-center py-24 space-y-3" x-cloak>
+      <i data-lucide="search-x" class="w-10 h-10 text-zinc-600 mx-auto"></i>
+      <h3 class="text-base font-semibold text-zinc-300">No skills match your query</h3>
+      <p class="text-xs text-zinc-500">Try searching for other terms or reset your category filter.</p>
+      <button @click="searchQuery = ''; selectedCategory = 'All'" class="text-xs text-emerald-400 hover:underline pt-2">Clear search filters</button>
+    </div>
+  </main>
+
+  <!-- Interactive Detail Modal -->
+  <div x-show="activeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" x-cloak>
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" @click="closeModal()"></div>
+
+    <!-- Modal Content -->
+    <div class="relative bg-zinc-900 border border-zinc-800 rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl z-10 overflow-hidden">
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-zinc-800 flex items-start justify-between bg-zinc-950/60">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700" x-text="activeModal?.category"></span>
+            <span class="text-xs font-mono text-zinc-500">Path: skills/<span x-text="activeModal?.id"></span>/SKILL.md</span>
+          </div>
+          <h2 class="text-xl font-bold text-white mt-2" x-text="activeModal?.name"></h2>
+        </div>
+        <button @click="closeModal()" class="text-zinc-500 hover:text-white p-1.5 rounded-lg hover:bg-zinc-800 transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body (Markdown Viewer) -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-1 prose-custom">
+        <!-- Trigger Box -->
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
+          <span class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block mb-1">Trigger / Description</span>
+          <p class="text-xs text-zinc-300 leading-relaxed font-sans" x-text="activeModal?.description"></p>
+        </div>
+
+        <!-- Rendered Instructions -->
+        <div>
+          <span class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block mb-3">Specification & Runbook</span>
+          <div class="text-xs space-y-3" x-html="activeModalRendered"></div>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 bg-zinc-950/80 border-t border-zinc-800 flex items-center justify-between">
+        <span class="text-xs font-mono text-zinc-500">Press Esc to close</span>
+        <button @click="closeModal()" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-white transition">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="border-t border-zinc-900 bg-zinc-950 py-8 text-center text-xs text-zinc-600 font-mono">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p>Built with Tailwind CSS • Compatible with Antigravity, Claude Code & OpenCode</p>
+      <p>Maintained by <a href="https://github.com/Loreeenzz" target="_blank" class="text-zinc-400 hover:text-white underline">Loreeenzz</a></p>
+    </div>
+  </footer>
+
+  <!-- Application State & Data Script -->
+  <script>
+    function skillsApp() {
+      return {
+        searchQuery: '',
+        selectedCategory: 'All',
+        activeModal: null,
+        activeModalRendered: '',
+        copiedId: null,
+        categories: ['All', 'Prospect & Architecture', 'Git & Versioning', 'Session Continuity'],
+        skills: [
+          {
+            id: 'git-commit-message',
+            name: 'git-commit-message',
+            category: 'Git & Versioning',
+            description: 'Generate one clear Conventional Commit message and non-technical bullet summary from current changes without staging, committing, or pushing.',
+            content: `### Workflow
+1. Inspect git status and relevant diffs.
+2. Identify primary user-visible purpose.
+3. Choose exact Conventional Commit type.
+4. Output concise imperative summary with plain-language bullet points.`
+          },
+          {
+            id: 'prospect-standards-implement',
+            name: 'prospect-standards-implement',
+            category: 'Prospect & Architecture',
+            description: 'Implement a requested feature, fix, or code change in Prospect Analyzer while applying its current coding standards to every new or modified file.',
+            content: `### Guidelines
+- Angular 22 standalone OnPush components & signals.
+- FastAPI typed Pydantic models & service separation.
+- Definition-of-done gates & strict barrel export resolutions.`
+          },
+          {
+            id: 'prospect-standards-migrate',
+            name: 'prospect-standards-migrate',
+            category: 'Prospect & Architecture',
+            description: 'Fully migrate a specified Prospect Analyzer file to current project coding standards, preserving behavior and verifying all affected files.',
+            content: `### Migration Scope
+- Audit whole files against CODE-STANDARD/ guidelines.
+- Preserves business rules, SSR behavior, accessibility, and public API contracts.
+- Uses references/coverage.md for requirement inventory.`
+          },
+          {
+            id: 'prospect-standards-review',
+            name: 'prospect-standards-review',
+            category: 'Prospect & Architecture',
+            description: 'Review a Prospect Analyzer implementation against the user request, repository standards, tests, contracts, security, and final validation.',
+            content: `### Severity Levels
+- **Blocker:** security issues, broken public contracts, or data loss.
+- **Major:** standards violations, race conditions, or missing tests.
+- **Minor:** maintainability, docs, or non-critical formatting gaps.`
+          },
+          {
+            id: 'session-handoff',
+            name: 'session-handoff',
+            category: 'Session Continuity',
+            description: 'Manage session continuity across chats. Generates a clean HANDOFF.md before starting a new chat or resumes work without context rot.',
+            content: `### Operations
+- **Export Mode (@session-handoff export):** Extracts active state, decisions, and immediate next steps into project-root HANDOFF.md.
+- **Resume Mode (@session-handoff resume):** Ingests HANDOFF.md at turn 1 of a fresh chat session.`
+          }
+        ],
+        get filteredSkills() {
+          return this.skills.filter(s => {
+            const matchesCat = this.selectedCategory === 'All' || s.category === this.selectedCategory;
+            const matchesSearch = s.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
+                                  s.description.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+                                  s.category.toLowerCase().includes(this.searchQuery.toLowerCase());
+            return matchesCat && matchesSearch;
+          });
+        },
+        openModal(skill) {
+          this.activeModal = skill;
+          this.activeModalRendered = marked.parse(skill.content);
+          this.$nextTick(() => lucide.createIcons());
+        },
+        closeModal() {
+          this.activeModal = null;
+        },
+        copyText(text, id) {
+          navigator.clipboard.writeText(text);
+          this.copiedId = id;
+          setTimeout(() => {
+            if (this.copiedId === id) this.copiedId = null;
+          }, 2000);
+        },
+        initApp() {
+          this.$nextTick(() => lucide.createIcons());
+        }
+      }
+    }
+  </script>
+</body>
+</html>
