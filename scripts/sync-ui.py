@@ -20,12 +20,19 @@ INDEX_HTML_PATH = os.path.join(ROOT_DIR, "index.html")
 def infer_category(name: str, description: str) -> str:
     lower = f"{name} {description}".lower()
     if "prospect" in lower or "angular" in lower or "fastapi" in lower:
-        return "Prospect & Architecture"
+        return "Angular & FastAPI Standards"
     if "git" in lower or "commit" in lower or "branch" in lower or "pr" in lower:
         return "Git & Versioning"
     if "session" in lower or "handoff" in lower or "memory" in lower or "context" in lower:
         return "Session Continuity"
     return "General Workflow"
+
+
+def infer_scope(name: str, description: str) -> str:
+    lower = f"{name} {description}".lower()
+    if "prospect" in lower:
+        return "Stack Preset"
+    return "Universal"
 
 
 def parse_frontmatter(raw: str):
@@ -73,7 +80,6 @@ def collect_skill_files(skill_folder_path: str, skill_id: str):
                 "lines": lines,
                 "sizeBytes": size_bytes,
             })
-    # Ensure SKILL.md is always first
     files.sort(key=lambda x: (0 if x["name"] == "SKILL.md" else 1, x["name"]))
     return files
 
@@ -96,6 +102,7 @@ def build_manifest():
         name = meta.get("name", folder)
         description = meta.get("description", "")
         category = meta.get("category", infer_category(name, description))
+        scope = meta.get("scope", infer_scope(name, description))
 
         files = collect_skill_files(folder_path, folder)
         total_lines = sum(f["lines"] for f in files)
@@ -104,6 +111,7 @@ def build_manifest():
             "id": folder,
             "name": name,
             "category": category,
+            "scope": scope,
             "description": description,
             "body": body,
             "rawSkillMd": raw_skill,
@@ -124,7 +132,6 @@ def build_manifest():
 
     print(f"  [✓] Generated skills-manifest.json ({len(skills)} skills)")
 
-    # Also inject into index.html between markers if index.html exists
     if os.path.isfile(INDEX_HTML_PATH):
         with open(INDEX_HTML_PATH, "r", encoding="utf-8") as f:
             html = f.read()
