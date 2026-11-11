@@ -20,18 +20,20 @@
           colors: {
             brand: {
               50: '#f0fdf4',
+              400: '#4ade80',
               500: '#22c55e',
               600: '#16a34a',
             },
             zinc: {
-              850: '#1e1e24',
-              900: '#121216',
+              750: '#2e2e36',
+              850: '#18181d',
+              900: '#111115',
               950: '#09090b',
             }
           },
           fontFamily: {
-            mono: ['JetBrains Mono', 'Menlo', 'monospace'],
-            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
           }
         }
       }
@@ -48,182 +50,329 @@
       inset: -1px;
       border-radius: inherit;
       padding: 1px;
-      background: linear-gradient(to bottom right, rgba(255,255,255,0.12), rgba(255,255,255,0.02));
+      background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.03) 50%, rgba(34,197,94,0.15));
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       pointer-events: none;
     }
     .prose-custom pre {
-      background: #0d0e12;
+      background: #09090b;
       border: 1px solid #27272a;
       border-radius: 0.75rem;
       padding: 1rem;
       color: #e4e4e7;
       overflow-x: auto;
+      font-family: 'JetBrains Mono', Menlo, monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      margin: 0.85rem 0;
     }
     .prose-custom code {
       color: #4ade80;
       background: rgba(34, 197, 94, 0.1);
-      padding: 0.2rem 0.4rem;
-      border-radius: 0.25rem;
-      font-size: 0.875rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 0.3rem;
+      font-size: 0.82rem;
+      font-family: 'JetBrains Mono', Menlo, monospace;
     }
-    .prose-custom h1, .prose-custom h2, .prose-custom h3 {
+    .prose-custom pre code {
+      color: #e4e4e7;
+      background: transparent;
+      padding: 0;
+      font-size: 0.8rem;
+    }
+    .prose-custom h1 {
+      color: #ffffff;
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-top: 0.5rem;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.02em;
+    }
+    .prose-custom h2 {
       color: #f4f4f5;
+      font-size: 1.05rem;
       font-weight: 700;
       margin-top: 1.5rem;
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.6rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid #27272a;
+    }
+    .prose-custom h3 {
+      color: #e4e4e7;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-top: 1.2rem;
+      margin-bottom: 0.4rem;
     }
     .prose-custom p, .prose-custom li {
       color: #a1a1aa;
       line-height: 1.7;
+      font-size: 0.875rem;
     }
     .prose-custom ul {
       list-style-type: disc;
-      padding-left: 1.25rem;
+      padding-left: 1.4rem;
+      margin: 0.6rem 0;
+    }
+    .prose-custom ol {
+      list-style-type: decimal;
+      padding-left: 1.4rem;
+      margin: 0.6rem 0;
+    }
+    .prose-custom li {
+      margin: 0.25rem 0;
+    }
+    .prose-custom strong {
+      color: #f4f4f5;
+      font-weight: 600;
+    }
+    .prose-custom table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.8rem;
+    }
+    .prose-custom th {
+      background: #18181d;
+      color: #f4f4f5;
+      text-align: left;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #27272a;
+      font-weight: 600;
+    }
+    .prose-custom td {
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #27272a;
+      color: #a1a1aa;
+      vertical-align: top;
     }
   </style>
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased selection:bg-brand-500/20 selection:text-brand-500" x-data="skillsApp()" x-init="initApp()">
+<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased selection:bg-brand-500/20 selection:text-brand-400"
+      x-data="skillsApp()"
+      x-init="initApp()"
+      @keydown.window.escape="closeModal()"
+      @keydown.window.meta.k.prevent="focusSearch()"
+      @keydown.window.ctrl.k.prevent="focusSearch()"
+      @keydown.window.slash="if ($event.target.tagName !== 'INPUT') { $event.preventDefault(); focusSearch(); }">
 
-  <!-- Ambient Glow Effects -->
-  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-brand-500/10 via-brand-500/0 to-transparent blur-3xl pointer-events-none -z-10"></div>
+  <!-- Ambient Top Glow -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-6xl h-96 bg-gradient-to-b from-brand-500/10 via-emerald-500/5 to-transparent blur-3xl pointer-events-none -z-10"></div>
 
-  <!-- Header -->
-  <header class="border-b border-zinc-900 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40">
+  <!-- Top Navbar -->
+  <header class="border-b border-zinc-900 bg-zinc-950/85 backdrop-blur-md sticky top-0 z-40">
     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-emerald-700 flex items-center justify-center font-bold text-zinc-950 shadow-lg shadow-brand-500/20">
-          <i data-lucide="sparkles" class="w-5 h-5 text-zinc-950"></i>
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-400 to-emerald-700 flex items-center justify-center font-bold text-zinc-950 shadow-lg shadow-brand-500/20">
+          <i data-lucide="terminal" class="w-5 h-5 text-zinc-950"></i>
         </div>
         <div>
-          <span class="font-bold text-base tracking-tight flex items-center gap-2">
-            Agent Skills Vault
-            <span class="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">v1.0</span>
-          </span>
-          <p class="text-xs text-zinc-500 font-mono">Compatible with Antigravity • Claude Code • OpenCode</p>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-base tracking-tight text-white">Agent Skills Vault</span>
+            <span class="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Live Manifest</span>
+          </div>
+          <p class="text-[11px] text-zinc-500 font-mono">Antigravity • OpenCode • Claude Code • Cursor</p>
         </div>
       </div>
+
       <div class="flex items-center space-x-3">
-        <a href="https://github.com/Loreeenzz/my-skills" target="_blank" class="text-xs bg-zinc-900 hover:bg-zinc-850 hover:text-white transition px-3 py-1.5 rounded-lg border border-zinc-800 flex items-center gap-2 text-zinc-300">
-          <i data-lucide="github" class="w-4 h-4"></i>
-          <span>GitHub</span>
+        <button @click="showArchModal = true; $nextTick(() => lucide.createIcons())"
+                class="text-xs bg-zinc-900 hover:bg-zinc-850 hover:text-white transition px-3 py-1.5 rounded-lg border border-zinc-800 flex items-center gap-1.5 text-zinc-300">
+          <i data-lucide="network" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span class="hidden sm:inline">Architecture</span>
+        </button>
+        <a href="https://github.com/Loreeenzz/my-skills" target="_blank"
+           class="text-xs bg-zinc-100 hover:bg-white text-zinc-950 font-semibold transition px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 shadow-sm">
+          <i data-lucide="github" class="w-3.5 h-3.5"></i>
+          <span>GitHub Repo</span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="max-w-7xl mx-auto px-6 pt-12 pb-8">
-    <div class="max-w-3xl space-y-4">
-      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
-        Personal AI Agent <br class="hidden sm:inline">
-        <span class="bg-gradient-to-r from-emerald-400 via-brand-500 to-teal-400 bg-clip-text text-transparent">Skills & Workflows</span>
-      </h1>
-      <p class="text-zinc-400 text-sm md:text-base leading-relaxed">
-        Standardized, portable capabilities designed for progressive disclosure across coding assistants. Fully version-controlled and auto-synced across machines.
-      </p>
+  <!-- Hero & Interactive Command Builder -->
+  <section class="max-w-7xl mx-auto px-6 pt-10 pb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Left Column: Title & Pitch -->
+      <div class="lg:col-span-7 space-y-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs text-zinc-400 font-mono">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span>agentskills.io specification v1.0</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-[1.12]">
+          Modular Capabilities for <br class="hidden sm:inline">
+          <span class="bg-gradient-to-r from-emerald-400 via-brand-500 to-teal-300 bg-clip-text text-transparent">Autonomous Coding Agents</span>
+        </h1>
+        <p class="text-zinc-400 text-sm sm:text-base leading-relaxed max-w-2xl">
+          Zero-copy symlinked skill definitions, coding standards runbooks, and session handoff protocols. Edit once in <code class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-1.5 py-0.5 rounded">my-skills</code> and reflect changes globally across every IDE and project.
+        </p>
+      </div>
 
-      <!-- Quick Install Box -->
-      <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        <div class="flex-1 bg-zinc-900/90 border border-zinc-800 rounded-xl px-4 py-2.5 flex items-center justify-between font-mono text-xs text-zinc-300 shadow-inner">
-          <div class="flex items-center gap-2 truncate">
-            <span class="text-emerald-400 select-none">$</span>
-            <span class="truncate">git clone https://github.com/Loreeenzz/my-skills.git && ./my-skills/install.sh</span>
+      <!-- Right Column: Interactive Target Installer -->
+      <div class="lg:col-span-5 bg-zinc-900/70 border border-zinc-800/90 rounded-2xl p-5 glow-border space-y-4">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-mono uppercase tracking-wider text-zinc-400 flex items-center gap-1.5">
+            <i data-lucide="cpu" class="w-3.5 h-3.5 text-emerald-400"></i>
+            Interactive Installer
+          </span>
+          <span class="text-[11px] font-mono text-zinc-500">./install.sh</span>
+        </div>
+
+        <!-- Target Selector Tabs -->
+        <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5 bg-zinc-950 p-1 rounded-xl border border-zinc-850">
+          <template x-for="t in installTargets" :key="t.id">
+            <button @click="selectedTarget = t.id"
+              :class="selectedTarget === t.id ? 'bg-zinc-800 text-white font-semibold border-zinc-700 shadow-sm' : 'text-zinc-400 hover:text-zinc-200 border-transparent'"
+              class="px-2 py-1.5 rounded-lg text-[11px] font-mono border transition text-center truncate"
+              x-text="t.label">
+            </button>
+          </template>
+        </div>
+
+        <!-- Generated Command Output -->
+        <div class="bg-zinc-950 border border-zinc-850 rounded-xl p-3.5 font-mono text-xs space-y-2">
+          <div class="flex items-center justify-between text-[11px] text-zinc-500">
+            <span x-text="currentTargetObj.desc"></span>
+            <span class="text-emerald-400/80" x-text="currentTargetObj.dest"></span>
           </div>
-          <button @click="copyText('git clone https://github.com/Loreeenzz/my-skills.git && cd my-skills && ./install.sh --global', 'main-clone')" class="ml-3 p-1.5 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition">
-            <i data-lucide="copy" class="w-4 h-4" x-show="copiedId !== 'main-clone'"></i>
-            <i data-lucide="check" class="w-4 h-4 text-emerald-400" x-show="copiedId === 'main-clone'" x-cloak></i>
-          </button>
+          <div class="flex items-center justify-between gap-2 pt-1 border-t border-zinc-900">
+            <div class="flex items-center gap-2 overflow-x-auto py-1 text-zinc-200 scrollbar-none">
+              <span class="text-emerald-400 select-none">$</span>
+              <code class="whitespace-nowrap" x-text="currentTargetObj.cmd"></code>
+            </div>
+            <button @click="copyText(currentTargetObj.cmd, 'installer-cmd')"
+                    class="shrink-0 px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition flex items-center gap-1">
+              <i data-lucide="copy" class="w-3.5 h-3.5" x-show="copiedId !== 'installer-cmd'"></i>
+              <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400" x-show="copiedId === 'installer-cmd'" x-cloak></i>
+              <span class="text-[11px]" x-text="copiedId === 'installer-cmd' ? 'Copied' : 'Copy'"></span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Live Metrics Bento -->
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-zinc-900 font-mono">
-      <div class="bg-zinc-900/40 border border-zinc-850 rounded-xl p-4">
-        <span class="text-xs text-zinc-500 uppercase tracking-wider block">Total Skills</span>
-        <span class="text-2xl font-bold text-white mt-1 block" x-text="skills.length">5</span>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-8 pt-6 border-t border-zinc-900/80 font-mono">
+      <div class="bg-zinc-900/40 border border-zinc-850/80 rounded-xl p-4">
+        <span class="text-[11px] text-zinc-500 uppercase tracking-wider block">Total Skills</span>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span class="text-2xl font-bold text-white" x-text="skills.length">5</span>
+          <span class="text-xs text-emerald-400">active</span>
+        </div>
       </div>
-      <div class="bg-zinc-900/40 border border-zinc-850 rounded-xl p-4">
-        <span class="text-xs text-zinc-500 uppercase tracking-wider block">Standard</span>
-        <span class="text-sm font-semibold text-emerald-400 mt-2 block">agentskills.io</span>
+      <div class="bg-zinc-900/40 border border-zinc-850/80 rounded-xl p-4">
+        <span class="text-[11px] text-zinc-500 uppercase tracking-wider block">Total Documentation</span>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span class="text-2xl font-bold text-white" x-text="totalLinesCount"></span>
+          <span class="text-xs text-zinc-400">lines of spec</span>
+        </div>
       </div>
-      <div class="bg-zinc-900/40 border border-zinc-850 rounded-xl p-4">
-        <span class="text-xs text-zinc-500 uppercase tracking-wider block">Architecture</span>
-        <span class="text-sm font-semibold text-zinc-300 mt-2 block">Zero-Copy Symlink</span>
+      <div class="bg-zinc-900/40 border border-zinc-850/80 rounded-xl p-4">
+        <span class="text-[11px] text-zinc-500 uppercase tracking-wider block">Bundled Files</span>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span class="text-2xl font-bold text-white" x-text="totalFilesCount"></span>
+          <span class="text-xs text-zinc-400">SKILL.md + refs</span>
+        </div>
       </div>
-      <div class="bg-zinc-900/40 border border-zinc-850 rounded-xl p-4">
-        <span class="text-xs text-zinc-500 uppercase tracking-wider block">Sync State</span>
+      <div class="bg-zinc-900/40 border border-zinc-850/80 rounded-xl p-4">
+        <span class="text-[11px] text-zinc-500 uppercase tracking-wider block">Discovery Mode</span>
         <span class="text-sm font-semibold text-emerald-400 mt-2 flex items-center gap-1.5">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Live in Sync
+          <i data-lucide="zap" class="w-4 h-4"></i>
+          Progressive Disclosure
         </span>
       </div>
     </div>
   </section>
 
   <!-- Main Showcase Grid & Filters -->
-  <main class="max-w-7xl mx-auto px-6 py-6 pb-24">
+  <main class="max-w-7xl mx-auto px-6 py-4 pb-24">
     <!-- Controls Bar -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
       <!-- Category Pills -->
       <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
         <template x-for="cat in categories" :key="cat">
-          <button @click="selectedCategory = cat" 
+          <button @click="selectedCategory = cat"
             :class="selectedCategory === cat ? 'bg-zinc-100 text-zinc-950 font-semibold shadow-md' : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 hover:bg-zinc-850 border border-zinc-800'"
-            class="px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition-all duration-150">
+            class="px-3.5 py-1.5 rounded-lg text-xs whitespace-nowrap transition-all duration-150 flex items-center gap-1.5">
             <span x-text="cat"></span>
+            <span class="text-[10px] font-mono px-1.5 py-0.2 rounded-full"
+                  :class="selectedCategory === cat ? 'bg-zinc-950/15 text-zinc-900' : 'bg-zinc-800 text-zinc-500'"
+                  x-text="getCategoryCount(cat)"></span>
           </button>
         </template>
       </div>
 
-      <!-- Search Input -->
-      <div class="relative min-w-[280px]">
-        <i data-lucide="search" class="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
-        <input type="text" x-model="searchQuery" placeholder="Search skills, triggers, standards..." 
-          class="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-9 pr-4 py-2 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition">
-        <button x-show="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300">
-          <i data-lucide="x" class="w-3.5 h-3.5"></i>
-        </button>
+      <!-- Search Input with Cmd+K hint -->
+      <div class="relative min-w-[300px]">
+        <i data-lucide="search" class="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+        <input x-ref="searchInput" type="text" x-model="searchQuery" placeholder="Search skills, rules, or contents..."
+          class="w-full bg-zinc-900 border border-zinc-800 rounded-xl pl-10 pr-16 py-2 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition">
+        <div class="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+          <button x-show="searchQuery" @click="searchQuery = ''" class="text-zinc-500 hover:text-zinc-300 p-1">
+            <i data-lucide="x" class="w-3.5 h-3.5"></i>
+          </button>
+          <kbd x-show="!searchQuery" class="px-1.5 py-0.5 text-[10px] font-mono bg-zinc-800 text-zinc-400 rounded border border-zinc-700">⌘K</kbd>
+        </div>
       </div>
     </div>
 
     <!-- Skills Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       <template x-for="skill in filteredSkills" :key="skill.id">
-        <div class="bg-zinc-900/60 border border-zinc-800/80 hover:border-zinc-700 rounded-2xl p-6 transition-all duration-200 hover:shadow-xl hover:shadow-black/40 flex flex-col justify-between group glow-border">
+        <div @click="openModal(skill)"
+             class="cursor-pointer bg-zinc-900/60 border border-zinc-800/80 hover:border-emerald-500/40 rounded-2xl p-6 transition-all duration-200 hover:shadow-xl hover:shadow-black/50 flex flex-col justify-between group glow-border">
           <div class="space-y-4">
             <!-- Header Badges -->
             <div class="flex items-start justify-between gap-2">
-              <span class="text-[10px] font-mono uppercase tracking-wider font-semibold px-2.5 py-1 rounded-md bg-zinc-800 text-zinc-400 border border-zinc-750" x-text="skill.category"></span>
-              <span class="text-xs font-mono text-zinc-600 flex items-center gap-1">
-                <i data-lucide="terminal" class="w-3 h-3"></i>
-                SKILL.md
-              </span>
+              <span class="text-[10px] font-mono uppercase tracking-wider font-semibold px-2.5 py-1 rounded-md bg-zinc-800/90 text-zinc-300 border border-zinc-700/70" x-text="skill.category"></span>
+              <div class="flex items-center gap-2 text-[11px] font-mono text-zinc-500">
+                <span class="flex items-center gap-1" title="Files in skill">
+                  <i data-lucide="folder" class="w-3 h-3 text-zinc-400"></i>
+                  <span x-text="skill.fileCount + (skill.fileCount > 1 ? ' files' : ' file')"></span>
+                </span>
+                <span>•</span>
+                <span x-text="skill.totalLines + 'L'"></span>
+              </div>
             </div>
 
             <!-- Skill Name & Trigger Description -->
             <div>
-              <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center gap-2">
+              <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors flex items-center justify-between">
                 <span x-text="skill.name"></span>
+                <i data-lucide="arrow-up-right" class="w-4 h-4 text-zinc-600 group-hover:text-emerald-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
               </h3>
               <p class="text-xs text-zinc-400 line-clamp-3 mt-2 leading-relaxed" x-text="skill.description"></p>
+            </div>
+
+            <!-- File Pills inside Card -->
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <template x-for="f in skill.files" :key="f.name">
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-950/90 text-zinc-400 border border-zinc-800/80 flex items-center gap-1">
+                  <i data-lucide="file-code" class="w-2.5 h-2.5 text-emerald-400" x-show="f.name === 'SKILL.md'"></i>
+                  <i data-lucide="book-open" class="w-2.5 h-2.5 text-amber-400" x-show="f.name !== 'SKILL.md'"></i>
+                  <span x-text="f.name"></span>
+                </span>
+              </template>
             </div>
           </div>
 
           <!-- Action Footers -->
-          <div class="pt-6 mt-6 border-t border-zinc-850/80 flex items-center justify-between gap-2">
-            <button @click="openModal(skill)" class="text-xs text-zinc-400 hover:text-white font-medium flex items-center gap-1.5 transition">
-              <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-              View Spec
+          <div class="pt-5 mt-5 border-t border-zinc-850/90 flex items-center justify-between gap-2" @click.stop>
+            <button @click="openModal(skill)" class="text-xs text-zinc-300 hover:text-emerald-400 font-medium flex items-center gap-1.5 transition">
+              <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              Inspect Full Spec
             </button>
-            <div class="flex items-center gap-2">
-              <button @click="copyText('@' + skill.name, skill.id + '-trigger')" class="px-2.5 py-1.5 rounded-lg bg-zinc-800/90 hover:bg-zinc-750 text-zinc-300 hover:text-white border border-zinc-700/60 text-xs font-mono flex items-center gap-1.5 transition shadow-sm">
+
+            <div class="flex items-center gap-1.5">
+              <!-- Copy @trigger -->
+              <button @click="copyText('@' + skill.name, skill.id + '-at')"
+                      title="Copy @trigger"
+                      class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-750 text-zinc-200 hover:text-white border border-zinc-700/70 text-xs font-mono flex items-center gap-1.5 transition">
                 <span x-text="'@' + skill.name"></span>
-                <i data-lucide="copy" class="w-3 h-3 text-zinc-400" x-show="copiedId !== skill.id + '-trigger'"></i>
-                <i data-lucide="check" class="w-3 h-3 text-emerald-400" x-show="copiedId === skill.id + '-trigger'" x-cloak></i>
+                <i data-lucide="copy" class="w-3 h-3 text-zinc-400" x-show="copiedId !== skill.id + '-at'"></i>
+                <i data-lucide="check" class="w-3 h-3 text-emerald-400" x-show="copiedId === skill.id + '-at'" x-cloak></i>
               </button>
             </div>
           </div>
@@ -235,144 +384,266 @@
     <div x-show="filteredSkills.length === 0" class="text-center py-24 space-y-3" x-cloak>
       <i data-lucide="search-x" class="w-10 h-10 text-zinc-600 mx-auto"></i>
       <h3 class="text-base font-semibold text-zinc-300">No skills match your query</h3>
-      <p class="text-xs text-zinc-500">Try searching for other terms or reset your category filter.</p>
-      <button @click="searchQuery = ''; selectedCategory = 'All'" class="text-xs text-emerald-400 hover:underline pt-2">Clear search filters</button>
+      <p class="text-xs text-zinc-500">Try searching for other keywords or reset your category filter.</p>
+      <button @click="searchQuery = ''; selectedCategory = 'All'" class="text-xs text-emerald-400 hover:underline pt-2">Reset all filters</button>
     </div>
   </main>
 
-  <!-- Interactive Detail Modal -->
-  <div x-show="activeModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" x-cloak>
+  <!-- IDE-Style Multi-File Specification Modal -->
+  <div x-show="activeModal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6" x-cloak>
     <!-- Backdrop -->
     <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" @click="closeModal()"></div>
 
-    <!-- Modal Content -->
-    <div class="relative bg-zinc-900 border border-zinc-800 rounded-2xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl z-10 overflow-hidden">
-      <!-- Modal Header -->
-      <div class="p-6 border-b border-zinc-800 flex items-start justify-between bg-zinc-950/60">
-        <div>
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700" x-text="activeModal?.category"></span>
-            <span class="text-xs font-mono text-zinc-500">Path: skills/<span x-text="activeModal?.id"></span>/SKILL.md</span>
+    <!-- Modal Window -->
+    <div class="relative bg-zinc-900 border border-zinc-800 rounded-2xl max-w-4xl w-full max-h-[88vh] flex flex-col shadow-2xl z-10 overflow-hidden">
+      <!-- Modal Top Header -->
+      <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between bg-zinc-950">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+            <i data-lucide="terminal" class="w-4 h-4 text-emerald-400"></i>
           </div>
-          <h2 class="text-xl font-bold text-white mt-2" x-text="activeModal?.name"></h2>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2">
+              <h2 class="text-lg font-bold text-white truncate" x-text="activeModal?.name"></h2>
+              <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700" x-text="activeModal?.category"></span>
+            </div>
+            <p class="text-xs font-mono text-zinc-500 truncate" x-text="'skills/' + activeModal?.id + '/' + (activeFile?.name || 'SKILL.md')"></p>
+          </div>
         </div>
-        <button @click="closeModal()" class="text-zinc-500 hover:text-white p-1.5 rounded-lg hover:bg-zinc-800 transition">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <a :href="'https://github.com/Loreeenzz/my-skills/blob/main/skills/' + activeModal?.id + '/' + (activeFile?.name || 'SKILL.md')"
+             target="_blank"
+             class="px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-mono text-zinc-300 hover:text-white flex items-center gap-1.5 transition">
+            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            <span class="hidden sm:inline">GitHub</span>
+          </a>
+          <button @click="closeModal()" class="text-zinc-400 hover:text-white p-1.5 rounded-lg hover:bg-zinc-800 transition">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- Modal Body (Markdown Viewer) -->
-      <div class="p-6 overflow-y-auto space-y-6 flex-1 prose-custom">
-        <!-- Trigger Box -->
-        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4">
-          <span class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block mb-1">Trigger / Description</span>
-          <p class="text-xs text-zinc-300 leading-relaxed font-sans" x-text="activeModal?.description"></p>
+      <!-- IDE File Tabs & View Mode Switcher -->
+      <div class="px-6 py-2 bg-zinc-950/70 border-b border-zinc-850 flex flex-wrap items-center justify-between gap-3">
+        <!-- File Tabs -->
+        <div class="flex items-center gap-1.5 overflow-x-auto py-0.5">
+          <template x-for="f in activeModal?.files || []" :key="f.name">
+            <button @click="selectFile(f)"
+              :class="activeFile?.name === f.name ? 'bg-zinc-800 text-emerald-400 border-zinc-700 font-semibold' : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 border-transparent'"
+              class="px-3 py-1.5 rounded-lg text-xs font-mono border flex items-center gap-1.5 transition">
+              <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+              <span x-text="f.name"></span>
+              <span class="text-[10px] text-zinc-500" x-text="'(' + f.lines + 'L)'"></span>
+            </button>
+          </template>
         </div>
 
-        <!-- Rendered Instructions -->
-        <div>
-          <span class="text-[10px] uppercase font-mono tracking-wider text-zinc-500 block mb-3">Specification & Runbook</span>
-          <div class="text-xs space-y-3" x-html="activeModalRendered"></div>
+        <!-- Rendered vs Raw Toggle + Copy Button -->
+        <div class="flex items-center gap-2">
+          <div class="bg-zinc-900 p-0.5 rounded-lg border border-zinc-800 flex items-center text-xs font-mono">
+            <button @click="viewMode = 'rendered'"
+              :class="viewMode === 'rendered' ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'"
+              class="px-2.5 py-1 rounded-md transition">
+              Preview
+            </button>
+            <button @click="viewMode = 'raw'"
+              :class="viewMode === 'raw' ? 'bg-zinc-800 text-white font-semibold' : 'text-zinc-400 hover:text-zinc-200'"
+              class="px-2.5 py-1 rounded-md transition">
+              Raw MD
+            </button>
+          </div>
+
+          <button @click="copyText(activeFile?.content || '', 'modal-raw-copy')"
+                  class="px-3 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 text-xs font-mono flex items-center gap-1.5 transition">
+            <i data-lucide="copy" class="w-3.5 h-3.5" x-show="copiedId !== 'modal-raw-copy'"></i>
+            <i data-lucide="check" class="w-3.5 h-3.5" x-show="copiedId === 'modal-raw-copy'" x-cloak></i>
+            <span x-text="copiedId === 'modal-raw-copy' ? 'Copied File!' : 'Copy File'"></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-zinc-900/90">
+        <!-- Trigger Banner (shown on SKILL.md) -->
+        <div x-show="activeFile?.name === 'SKILL.md'" class="bg-zinc-950/90 border border-zinc-800/90 rounded-xl p-4 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">Progressive Disclosure Trigger</span>
+            <span class="text-[11px] font-mono text-zinc-500">Loaded at agent startup</span>
+          </div>
+          <p class="text-xs text-zinc-300 leading-relaxed" x-text="activeModal?.description"></p>
+        </div>
+
+        <!-- Rendered Markdown View -->
+        <div x-show="viewMode === 'rendered'" class="prose-custom" x-html="activeFileRendered"></div>
+
+        <!-- Raw Markdown Source View -->
+        <div x-show="viewMode === 'raw'" x-cloak>
+          <pre class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 text-xs font-mono text-zinc-300 overflow-x-auto leading-relaxed whitespace-pre-wrap" x-text="activeFile?.content"></pre>
         </div>
       </div>
 
       <!-- Modal Footer -->
-      <div class="p-4 bg-zinc-950/80 border-t border-zinc-800 flex items-center justify-between">
-        <span class="text-xs font-mono text-zinc-500">Press Esc to close</span>
-        <button @click="closeModal()" class="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-white transition">
-          Done
+      <div class="px-6 py-3.5 bg-zinc-950 border-t border-zinc-800 flex items-center justify-between text-xs font-mono text-zinc-500">
+        <div class="flex items-center gap-3">
+          <span>Invoke with <code class="text-emerald-400" x-text="'@' + activeModal?.name"></code> or <code class="text-emerald-400" x-text="'/' + activeModal?.name"></code></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="hidden sm:inline">Press <kbd class="px-1.5 py-0.5 bg-zinc-900 rounded border border-zinc-800">Esc</kbd> to close</span>
+          <button @click="closeModal()" class="px-4 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-sans font-medium transition">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture & Sync Diagram Modal -->
+  <div x-show="showArchModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" x-cloak>
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" @click="showArchModal = false"></div>
+    <div class="relative bg-zinc-900 border border-zinc-800 rounded-2xl max-w-3xl w-full p-6 space-y-6 shadow-2xl z-10 overflow-hidden">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+        <div class="flex items-center gap-2.5">
+          <i data-lucide="network" class="w-5 h-5 text-emerald-400"></i>
+          <h2 class="text-lg font-bold text-white">Zero-Copy Symlink Architecture</h2>
+        </div>
+        <button @click="showArchModal = false" class="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-zinc-800">
+          <i data-lucide="x" class="w-5 h-5"></i>
         </button>
+      </div>
+
+      <div class="space-y-4 text-xs text-zinc-300 leading-relaxed">
+        <p>All skills live in a single Git-backed source of truth (<code class="text-emerald-400 font-mono">my-skills/skills/*</code>) and are symlinked into global and workspace agent directories:</p>
+
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-4 font-mono text-[11px] text-zinc-300 overflow-x-auto space-y-1">
+          <div class="text-emerald-400 font-bold">~/Documents/personal/my-skills/skills/ (Single Source of Truth)</div>
+          <div>  ├── git-commit-message/SKILL.md</div>
+          <div>  ├── prospect-standards-implement/SKILL.md</div>
+          <div>  ├── prospect-standards-migrate/SKILL.md (+ references/coverage.md)</div>
+          <div>  ├── prospect-standards-review/SKILL.md</div>
+          <div>  └── session-handoff/SKILL.md</div>
+          <div class="pt-3 text-zinc-400">      │</div>
+          <div class="text-zinc-400">      ├──► <span class="text-white">~/.gemini/config/skills/*</span>          (Global Antigravity / Gemini)</div>
+          <div class="text-zinc-400">      ├──► <span class="text-white">~/.config/opencode/skills/*</span>       (Global OpenCode CLI)</div>
+          <div class="text-zinc-400">      ├──► <span class="text-white">~/.claude/skills/*</span>                (Global Claude Code)</div>
+          <div class="text-zinc-400">      └──► <span class="text-white">&lt;project&gt;/.agents/skills/*</span>        (Workspace-specific link)</div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div class="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3.5">
+            <span class="font-semibold text-white block mb-1">1. Editing an Existing Skill</span>
+            <p class="text-zinc-400 text-[11px]">Changes made to any file inside <code class="text-emerald-400">my-skills/skills/</code> are immediately live everywhere with zero commands required.</p>
+          </div>
+          <div class="bg-zinc-950/60 border border-zinc-800 rounded-xl p-3.5">
+            <span class="font-semibold text-white block mb-1">2. Adding a Brand-New Skill</span>
+            <p class="text-zinc-400 text-[11px]">Run <code class="text-emerald-400">./install.sh --all</code> to link the new folder across all agents and auto-regenerate this website's manifest.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2 border-t border-zinc-800">
+        <button @click="showArchModal = false" class="px-4 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-white transition">Got it</button>
       </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <footer class="border-t border-zinc-900 bg-zinc-950 py-8 text-center text-xs text-zinc-600 font-mono">
+  <footer class="border-t border-zinc-900 bg-zinc-950 py-8 text-xs text-zinc-500 font-mono">
     <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <p>Built with Tailwind CSS • Compatible with Antigravity, Claude Code & OpenCode</p>
-      <p>Maintained by <a href="https://github.com/Loreeenzz" target="_blank" class="text-zinc-400 hover:text-white underline">Loreeenzz</a></p>
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+        <span>Synced with skills-manifest.json</span>
+      </div>
+      <p>Maintained by <a href="https://github.com/Loreeenzz/my-skills" target="_blank" class="text-zinc-300 hover:text-white underline">Loreeenzz</a></p>
     </div>
   </footer>
 
-  <!-- Application State & Data Script -->
+  <!-- Embedded Auto-Synced Fallback Manifest -->
+  <script>
+    /* __SKILLS_MANIFEST_START__ */
+    window.__SKILLS_MANIFEST__ = {"generatedAt": "2026-11-11T03:00:07Z", "repository": "https://github.com/Loreeenzz/my-skills", "skillCount": 5, "skills": [{"id": "git-commit-message", "name": "git-commit-message", "category": "Git & Versioning", "description": "Generate one clear Conventional Commit message and non-technical bullet summary from the current changes without staging, committing, or pushing.", "body": "# Generate a Git Commit Message\n\nReview the current change set and produce one recommended Conventional Commit\nmessage. This skill is advisory only: never run `git add`, `git commit`, or\n`git push`.\n\n## Workflow\n\n1. Inspect `git status` and the relevant diff in the application repository.\n2. Identify the primary user-visible purpose of the change.\n3. Choose the most accurate commit type (optionally include scope if the project uses scopes).\n4. Write a concise subject in imperative mood, capitalize the first word after\n   the colon, and omit a trailing period.\n5. Summarize the meaningful outcome in short, non-technical bullet points.\n6. Do not invent behavior, issue numbers, test results, or files that are not\n   supported by the change.\n\n## Commit Types\n\n- `feat`: adds a user-facing capability.\n- `fix`: corrects broken or incorrect behavior.\n- `chore`: maintenance, configuration, dependencies, or tooling.\n- `refactor`: changes internal structure without changing behavior.\n- `docs`: documentation-only changes.\n- `test`: test-only changes.\n- `style`: formatting or presentation-only changes.\n- `perf`: improves performance without changing the intended behavior.\n- `build`: build-system or packaging changes.\n- `ci`: continuous-integration changes.\n\nFormat: `<type>: <subject>` or `<type>(<scope>): <subject>`\n\n## Required Output\n\nReturn exactly this structure:\n\n```text\n<type>: <short imperative subject>\n\n- <plain-language outcome or user benefit>\n- <plain-language secondary outcome>\n```\n\nUse two to four bullets when useful. Describe what changed for users or the\nproject, not implementation details. Avoid source-file names, function names,\nclass names, framework jargon, command output, and phrases such as \"updated\nthe component\" when a clearer user-facing description is available.\n\nIf the change set contains unrelated work, identify the primary change and\nwarn that the changes should be separated before committing.", "rawSkillMd": "---\nname: git-commit-message\ndescription: Generate one clear Conventional Commit message and non-technical bullet summary from the current changes without staging, committing, or pushing.\n---\n\n# Generate a Git Commit Message\n\nReview the current change set and produce one recommended Conventional Commit\nmessage. This skill is advisory only: never run `git add`, `git commit`, or\n`git push`.\n\n## Workflow\n\n1. Inspect `git status` and the relevant diff in the application repository.\n2. Identify the primary user-visible purpose of the change.\n3. Choose the most accurate commit type (optionally include scope if the project uses scopes).\n4. Write a concise subject in imperative mood, capitalize the first word after\n   the colon, and omit a trailing period.\n5. Summarize the meaningful outcome in short, non-technical bullet points.\n6. Do not invent behavior, issue numbers, test results, or files that are not\n   supported by the change.\n\n## Commit Types\n\n- `feat`: adds a user-facing capability.\n- `fix`: corrects broken or incorrect behavior.\n- `chore`: maintenance, configuration, dependencies, or tooling.\n- `refactor`: changes internal structure without changing behavior.\n- `docs`: documentation-only changes.\n- `test`: test-only changes.\n- `style`: formatting or presentation-only changes.\n- `perf`: improves performance without changing the intended behavior.\n- `build`: build-system or packaging changes.\n- `ci`: continuous-integration changes.\n\nFormat: `<type>: <subject>` or `<type>(<scope>): <subject>`\n\n## Required Output\n\nReturn exactly this structure:\n\n```text\n<type>: <short imperative subject>\n\n- <plain-language outcome or user benefit>\n- <plain-language secondary outcome>\n```\n\nUse two to four bullets when useful. Describe what changed for users or the\nproject, not implementation details. Avoid source-file names, function names,\nclass names, framework jargon, command output, and phrases such as \"updated\nthe component\" when a clearer user-facing description is available.\n\nIf the change set contains unrelated work, identify the primary change and\nwarn that the changes should be separated before committing.\n", "totalLines": 55, "fileCount": 1, "files": [{"name": "SKILL.md", "path": "skills/git-commit-message/SKILL.md", "content": "---\nname: git-commit-message\ndescription: Generate one clear Conventional Commit message and non-technical bullet summary from the current changes without staging, committing, or pushing.\n---\n\n# Generate a Git Commit Message\n\nReview the current change set and produce one recommended Conventional Commit\nmessage. This skill is advisory only: never run `git add`, `git commit`, or\n`git push`.\n\n## Workflow\n\n1. Inspect `git status` and the relevant diff in the application repository.\n2. Identify the primary user-visible purpose of the change.\n3. Choose the most accurate commit type (optionally include scope if the project uses scopes).\n4. Write a concise subject in imperative mood, capitalize the first word after\n   the colon, and omit a trailing period.\n5. Summarize the meaningful outcome in short, non-technical bullet points.\n6. Do not invent behavior, issue numbers, test results, or files that are not\n   supported by the change.\n\n## Commit Types\n\n- `feat`: adds a user-facing capability.\n- `fix`: corrects broken or incorrect behavior.\n- `chore`: maintenance, configuration, dependencies, or tooling.\n- `refactor`: changes internal structure without changing behavior.\n- `docs`: documentation-only changes.\n- `test`: test-only changes.\n- `style`: formatting or presentation-only changes.\n- `perf`: improves performance without changing the intended behavior.\n- `build`: build-system or packaging changes.\n- `ci`: continuous-integration changes.\n\nFormat: `<type>: <subject>` or `<type>(<scope>): <subject>`\n\n## Required Output\n\nReturn exactly this structure:\n\n```text\n<type>: <short imperative subject>\n\n- <plain-language outcome or user benefit>\n- <plain-language secondary outcome>\n```\n\nUse two to four bullets when useful. Describe what changed for users or the\nproject, not implementation details. Avoid source-file names, function names,\nclass names, framework jargon, command output, and phrases such as \"updated\nthe component\" when a clearer user-facing description is available.\n\nIf the change set contains unrelated work, identify the primary change and\nwarn that the changes should be separated before committing.\n", "lines": 55, "sizeBytes": 2134}]}, {"id": "prospect-standards-implement", "name": "prospect-standards-implement", "category": "Prospect & Architecture", "description": "Implement a requested feature, fix, or code change in Prospect Analyzer while applying its current coding standards to every new or modified file. Use when the user names this skill and describes the implementation; use prospect-standards-migrate for a full existing-file standards migration.", "body": "# Implement to Prospect Analyzer standards\n\nTreat the user's remaining request as the implementation specification. They do not need to repeat the standards, list affected files, or prescribe checks. Deliver the requested behavior completely and keep existing functionality, public contracts, business rules, SSR behavior, accessibility, and visual behavior intact unless the request explicitly changes them. Apply **every applicable current project standard** to each new or modified file. This skill governs an implementation, not a whole-file migration of unrelated pre-existing code; if the user also requests full migration, use `prospect-standards-migrate` for that scope.\n\n## Definition of done\n\nAn implementation is complete only when all of the following are true:\n\n- The exact changed-file set was identified before editing and reviewed independently afterward.\n- Existing Git changes were inspected and preserved; unrelated cleanup was not included.\n- Every changed file was classified and checked against all applicable current standards.\n- Behavior changes have focused tests added or updated where the application supports them.\n- Focused formatting, lint, type/template, and test checks were run before broader checks.\n- UI checker invocations confirmed that the intended file paths were actually accepted; an empty filtered file set is not a passing result.\n- The final diff, imports/exports, callers, public contracts, and test names were reviewed.\n- New failures are separated from pre-existing repository failures in the completion report.\n\n## Establish the rules and change set\n\nFind the repository root containing `AGENTS.md`, `CODE-STANDARD/`, `prospect-analyzer-ui/`, and `prospect-analyzer-core/`. Read `AGENTS.md` and `CODE-STANDARD/INDEX.md`, then read the **complete current text of every `CODE-STANDARD/` document applicable to the anticipated files** before editing. Use `../prospect-standards-migrate/references/coverage.md` as an audit aid, but treat the current original standards documents as authoritative. Revisit the documents when the change set expands. The local documents are authoritative for UI work; do not use stale external links or substitute remembered summaries. Honor user instructions where they override a skill guideline. Where examples, checker behavior, and normative prose differ, follow `AGENTS.md` and the normative prose, resolving ambiguity from context.\n\nInspect the relevant application's Git status, target files, companion templates/styles/tests, callers, contracts, and available barrels. Classify the exact proposed changed-file set by owner and type before editing: Angular feature/core/shared/server, FastAPI API/core/models/services/tests, asset, or configuration. Preserve unrelated user edits. Choose the narrowest correct location for each addition: feature/page component, shared utility, model/interface, service, or owning `constants/<name>.constant.ts` with barrel. Check whether pure parsing, formatting, validation, or normalization belongs in `src/app/shared/utils/` and whether stable UI copy belongs in an owning feature constants barrel. Do not alter vendor/generated files or protected standards/config/allowlists to bypass a rule.\n\n## Implement\n\nMake the smallest coherent set of changes that fulfills the behavior, including necessary API, UI, types, callers, constants, barrels, tests, and configuration. For each file, read its applicable standards before editing and independently review the resulting file. Apply the standards to all new code and to existing code substantially refactored by the request. Do not leave newly introduced violations or a partially converted component. Avoid unrelated cleanup solely to make an old file globally pristine; report pre-existing violations separately. If the request explicitly asks for a full file migration, invoke the migration skill and bring that whole file into compliance.\n\nIn Angular work, pay particular attention to standalone `OnPush` components, `inject()`, signals, signal inputs/outputs, native control flow and tracked loops, Signal Forms for new or substantially refactored forms, the application `SignalFormControl` boundary for third-party CVAs, explicit access/returns and meaningful JSDoc, async request counters, `withLoading`, owner constants and nearest barrels, accessible action controls, `<app-svg-icon>`, BEM templates/SCSS, first-rule `:host { @apply block; }`, theme colors, and the documented bans. Check the original documents for exact conditions and exceptions.\n\nIn FastAPI work:\n\n- Keep routers in `src/api/`, infrastructure in `src/core/`, schemas in `src/models/`, and business logic in `src/services/`.\n- Preserve request/response schemas, status codes, error shapes, authentication behavior, and external API contracts unless the request explicitly changes them.\n- Keep validation and serialization in typed Pydantic models; keep business rules out of routers when they belong in services.\n- Place unit tests in `tests/` and integration tests in `tests/integration/`, using `test_*.py` names.\n- Run focused pytest tests first, then the configured Black/isort/type checks and broader tests when useful.\n- Do not weaken security, logging, configuration, or error handling to make tests pass.\n\nPreserve SSR and external API contracts where relevant.\n\n## Verify and report\n\nRun focused checks first: changed-file lint and formatting, type/template compilation, meaningful focused tests, and then a build or broader tests when needed to establish the behavior. For UI changes, visually inspect affected states and responsive behavior when feasible. From `prospect-analyzer-ui/`, run `node scripts/check-angular22-standards.mjs` with the **exact changed `src/...` `.ts`, `.html`, and `.svg` paths**; confirm the command received and accepted those intended paths. If there are no checker-supported files, record the checker as N/A rather than treating an empty filtered invocation as a pass. The checker does not cover SCSS or all semantic requirements, so manually review those. For backend changes, use focused pytest and configured Black/isort/type checks as applicable. Do not treat a passing aggregate scan as per-file proof. Inspect the final diff and changed-file set, fix current-change failures, and distinguish unrelated pre-existing repository failures.\n\nIn the final response, state what was implemented, how existing behavior was preserved, and a per-file pass/fail matrix with applicable standards, manual review, checker or N/A, and focused lint/format/type/test results. State any validation or visual-access limitation accurately. Do not stage, commit, or push automatically; do not expose or commit credentials, `.env` files, or Terraform secrets/state.", "rawSkillMd": "---\nname: prospect-standards-implement\ndescription: Implement a requested feature, fix, or code change in Prospect Analyzer while applying its current coding standards to every new or modified file. Use when the user names this skill and describes the implementation; use prospect-standards-migrate for a full existing-file standards migration.\n---\n\n# Implement to Prospect Analyzer standards\n\nTreat the user's remaining request as the implementation specification. They do not need to repeat the standards, list affected files, or prescribe checks. Deliver the requested behavior completely and keep existing functionality, public contracts, business rules, SSR behavior, accessibility, and visual behavior intact unless the request explicitly changes them. Apply **every applicable current project standard** to each new or modified file. This skill governs an implementation, not a whole-file migration of unrelated pre-existing code; if the user also requests full migration, use `prospect-standards-migrate` for that scope.\n\n## Definition of done\n\nAn implementation is complete only when all of the following are true:\n\n- The exact changed-file set was identified before editing and reviewed independently afterward.\n- Existing Git changes were inspected and preserved; unrelated cleanup was not included.\n- Every changed file was classified and checked against all applicable current standards.\n- Behavior changes have focused tests added or updated where the application supports them.\n- Focused formatting, lint, type/template, and test checks were run before broader checks.\n- UI checker invocations confirmed that the intended file paths were actually accepted; an empty filtered file set is not a passing result.\n- The final diff, imports/exports, callers, public contracts, and test names were reviewed.\n- New failures are separated from pre-existing repository failures in the completion report.\n\n## Establish the rules and change set\n\nFind the repository root containing `AGENTS.md`, `CODE-STANDARD/`, `prospect-analyzer-ui/`, and `prospect-analyzer-core/`. Read `AGENTS.md` and `CODE-STANDARD/INDEX.md`, then read the **complete current text of every `CODE-STANDARD/` document applicable to the anticipated files** before editing. Use `../prospect-standards-migrate/references/coverage.md` as an audit aid, but treat the current original standards documents as authoritative. Revisit the documents when the change set expands. The local documents are authoritative for UI work; do not use stale external links or substitute remembered summaries. Honor user instructions where they override a skill guideline. Where examples, checker behavior, and normative prose differ, follow `AGENTS.md` and the normative prose, resolving ambiguity from context.\n\nInspect the relevant application's Git status, target files, companion templates/styles/tests, callers, contracts, and available barrels. Classify the exact proposed changed-file set by owner and type before editing: Angular feature/core/shared/server, FastAPI API/core/models/services/tests, asset, or configuration. Preserve unrelated user edits. Choose the narrowest correct location for each addition: feature/page component, shared utility, model/interface, service, or owning `constants/<name>.constant.ts` with barrel. Check whether pure parsing, formatting, validation, or normalization belongs in `src/app/shared/utils/` and whether stable UI copy belongs in an owning feature constants barrel. Do not alter vendor/generated files or protected standards/config/allowlists to bypass a rule.\n\n## Implement\n\nMake the smallest coherent set of changes that fulfills the behavior, including necessary API, UI, types, callers, constants, barrels, tests, and configuration. For each file, read its applicable standards before editing and independently review the resulting file. Apply the standards to all new code and to existing code substantially refactored by the request. Do not leave newly introduced violations or a partially converted component. Avoid unrelated cleanup solely to make an old file globally pristine; report pre-existing violations separately. If the request explicitly asks for a full file migration, invoke the migration skill and bring that whole file into compliance.\n\nIn Angular work, pay particular attention to standalone `OnPush` components, `inject()`, signals, signal inputs/outputs, native control flow and tracked loops, Signal Forms for new or substantially refactored forms, the application `SignalFormControl` boundary for third-party CVAs, explicit access/returns and meaningful JSDoc, async request counters, `withLoading`, owner constants and nearest barrels, accessible action controls, `<app-svg-icon>`, BEM templates/SCSS, first-rule `:host { @apply block; }`, theme colors, and the documented bans. Check the original documents for exact conditions and exceptions.\n\nIn FastAPI work:\n\n- Keep routers in `src/api/`, infrastructure in `src/core/`, schemas in `src/models/`, and business logic in `src/services/`.\n- Preserve request/response schemas, status codes, error shapes, authentication behavior, and external API contracts unless the request explicitly changes them.\n- Keep validation and serialization in typed Pydantic models; keep business rules out of routers when they belong in services.\n- Place unit tests in `tests/` and integration tests in `tests/integration/`, using `test_*.py` names.\n- Run focused pytest tests first, then the configured Black/isort/type checks and broader tests when useful.\n- Do not weaken security, logging, configuration, or error handling to make tests pass.\n\nPreserve SSR and external API contracts where relevant.\n\n## Verify and report\n\nRun focused checks first: changed-file lint and formatting, type/template compilation, meaningful focused tests, and then a build or broader tests when needed to establish the behavior. For UI changes, visually inspect affected states and responsive behavior when feasible. From `prospect-analyzer-ui/`, run `node scripts/check-angular22-standards.mjs` with the **exact changed `src/...` `.ts`, `.html`, and `.svg` paths**; confirm the command received and accepted those intended paths. If there are no checker-supported files, record the checker as N/A rather than treating an empty filtered invocation as a pass. The checker does not cover SCSS or all semantic requirements, so manually review those. For backend changes, use focused pytest and configured Black/isort/type checks as applicable. Do not treat a passing aggregate scan as per-file proof. Inspect the final diff and changed-file set, fix current-change failures, and distinguish unrelated pre-existing repository failures.\n\nIn the final response, state what was implemented, how existing behavior was preserved, and a per-file pass/fail matrix with applicable standards, manual review, checker or N/A, and focused lint/format/type/test results. State any validation or visual-access limitation accurately. Do not stage, commit, or push automatically; do not expose or commit credentials, `.env` files, or Terraform secrets/state.\n", "totalLines": 50, "fileCount": 1, "files": [{"name": "SKILL.md", "path": "skills/prospect-standards-implement/SKILL.md", "content": "---\nname: prospect-standards-implement\ndescription: Implement a requested feature, fix, or code change in Prospect Analyzer while applying its current coding standards to every new or modified file. Use when the user names this skill and describes the implementation; use prospect-standards-migrate for a full existing-file standards migration.\n---\n\n# Implement to Prospect Analyzer standards\n\nTreat the user's remaining request as the implementation specification. They do not need to repeat the standards, list affected files, or prescribe checks. Deliver the requested behavior completely and keep existing functionality, public contracts, business rules, SSR behavior, accessibility, and visual behavior intact unless the request explicitly changes them. Apply **every applicable current project standard** to each new or modified file. This skill governs an implementation, not a whole-file migration of unrelated pre-existing code; if the user also requests full migration, use `prospect-standards-migrate` for that scope.\n\n## Definition of done\n\nAn implementation is complete only when all of the following are true:\n\n- The exact changed-file set was identified before editing and reviewed independently afterward.\n- Existing Git changes were inspected and preserved; unrelated cleanup was not included.\n- Every changed file was classified and checked against all applicable current standards.\n- Behavior changes have focused tests added or updated where the application supports them.\n- Focused formatting, lint, type/template, and test checks were run before broader checks.\n- UI checker invocations confirmed that the intended file paths were actually accepted; an empty filtered file set is not a passing result.\n- The final diff, imports/exports, callers, public contracts, and test names were reviewed.\n- New failures are separated from pre-existing repository failures in the completion report.\n\n## Establish the rules and change set\n\nFind the repository root containing `AGENTS.md`, `CODE-STANDARD/`, `prospect-analyzer-ui/`, and `prospect-analyzer-core/`. Read `AGENTS.md` and `CODE-STANDARD/INDEX.md`, then read the **complete current text of every `CODE-STANDARD/` document applicable to the anticipated files** before editing. Use `../prospect-standards-migrate/references/coverage.md` as an audit aid, but treat the current original standards documents as authoritative. Revisit the documents when the change set expands. The local documents are authoritative for UI work; do not use stale external links or substitute remembered summaries. Honor user instructions where they override a skill guideline. Where examples, checker behavior, and normative prose differ, follow `AGENTS.md` and the normative prose, resolving ambiguity from context.\n\nInspect the relevant application's Git status, target files, companion templates/styles/tests, callers, contracts, and available barrels. Classify the exact proposed changed-file set by owner and type before editing: Angular feature/core/shared/server, FastAPI API/core/models/services/tests, asset, or configuration. Preserve unrelated user edits. Choose the narrowest correct location for each addition: feature/page component, shared utility, model/interface, service, or owning `constants/<name>.constant.ts` with barrel. Check whether pure parsing, formatting, validation, or normalization belongs in `src/app/shared/utils/` and whether stable UI copy belongs in an owning feature constants barrel. Do not alter vendor/generated files or protected standards/config/allowlists to bypass a rule.\n\n## Implement\n\nMake the smallest coherent set of changes that fulfills the behavior, including necessary API, UI, types, callers, constants, barrels, tests, and configuration. For each file, read its applicable standards before editing and independently review the resulting file. Apply the standards to all new code and to existing code substantially refactored by the request. Do not leave newly introduced violations or a partially converted component. Avoid unrelated cleanup solely to make an old file globally pristine; report pre-existing violations separately. If the request explicitly asks for a full file migration, invoke the migration skill and bring that whole file into compliance.\n\nIn Angular work, pay particular attention to standalone `OnPush` components, `inject()`, signals, signal inputs/outputs, native control flow and tracked loops, Signal Forms for new or substantially refactored forms, the application `SignalFormControl` boundary for third-party CVAs, explicit access/returns and meaningful JSDoc, async request counters, `withLoading`, owner constants and nearest barrels, accessible action controls, `<app-svg-icon>`, BEM templates/SCSS, first-rule `:host { @apply block; }`, theme colors, and the documented bans. Check the original documents for exact conditions and exceptions.\n\nIn FastAPI work:\n\n- Keep routers in `src/api/`, infrastructure in `src/core/`, schemas in `src/models/`, and business logic in `src/services/`.\n- Preserve request/response schemas, status codes, error shapes, authentication behavior, and external API contracts unless the request explicitly changes them.\n- Keep validation and serialization in typed Pydantic models; keep business rules out of routers when they belong in services.\n- Place unit tests in `tests/` and integration tests in `tests/integration/`, using `test_*.py` names.\n- Run focused pytest tests first, then the configured Black/isort/type checks and broader tests when useful.\n- Do not weaken security, logging, configuration, or error handling to make tests pass.\n\nPreserve SSR and external API contracts where relevant.\n\n## Verify and report\n\nRun focused checks first: changed-file lint and formatting, type/template compilation, meaningful focused tests, and then a build or broader tests when needed to establish the behavior. For UI changes, visually inspect affected states and responsive behavior when feasible. From `prospect-analyzer-ui/`, run `node scripts/check-angular22-standards.mjs` with the **exact changed `src/...` `.ts`, `.html`, and `.svg` paths**; confirm the command received and accepted those intended paths. If there are no checker-supported files, record the checker as N/A rather than treating an empty filtered invocation as a pass. The checker does not cover SCSS or all semantic requirements, so manually review those. For backend changes, use focused pytest and configured Black/isort/type checks as applicable. Do not treat a passing aggregate scan as per-file proof. Inspect the final diff and changed-file set, fix current-change failures, and distinguish unrelated pre-existing repository failures.\n\nIn the final response, state what was implemented, how existing behavior was preserved, and a per-file pass/fail matrix with applicable standards, manual review, checker or N/A, and focused lint/format/type/test results. State any validation or visual-access limitation accurately. Do not stage, commit, or push automatically; do not expose or commit credentials, `.env` files, or Terraform secrets/state.\n", "lines": 50, "sizeBytes": 7085}]}, {"id": "prospect-standards-migrate", "name": "prospect-standards-migrate", "category": "Prospect & Architecture", "description": "Fully migrate a specified Prospect Analyzer file to current project coding standards, preserving behavior and verifying all affected files. Use for standards migrations, not ordinary narrow edits.", "body": "# Prospect standards migration\n\nMigrate the user's specified file to complete compliance with all applicable current repository standards, including necessary companion files and callers. A formatter or checker pass alone is never a complete migration. Preserve functionality, business rules, public contracts, accessibility, SSR behavior, and visual behavior; if a standard requires a behavior change, make the smallest compatible change and verify it.\n\n## Definition of done\n\nA migration is complete only when the specified file and every necessary companion file have been reviewed independently, existing behavior and contracts have been verified, focused validation has passed, and the final report separates current-change failures from pre-existing repository failures. An empty filtered standards-check invocation is not a pass.\n\n## Authority and scope\n\nLocate the root containing `AGENTS.md`, `CODE-STANDARD/`, `prospect-analyzer-ui/`, and `prospect-analyzer-core/`. Before editing, read `AGENTS.md`, `CODE-STANDARD/INDEX.md`, and the **complete current text of every applicable document** in `CODE-STANDARD/`. Read relevant configurations and nearby patterns too. Do not rely on this skill's summary in place of the originals. Use local `CODE-STANDARD/` documents as the source of truth. Use [references/coverage.md](references/coverage.md) as the audit map and include any newly added standards documents. Where prose, examples, the checker, or existing code disagree, follow `AGENTS.md` and the normative standards prose, resolving ambiguity from context. Never relax protected standards scripts, config, or allowlists to make a migration pass.\n\n## Workflow\n\n1. Resolve the exact path and owner: Angular feature/core/shared/server, FastAPI API/core/models/services/tests, asset, or configuration. Inspect Git status in the relevant independently versioned application and preserve unrelated user changes. Read the entire target, direct companions (component template, SCSS, test, constants, interfaces, barrels), relevant callers, and focused tests. Record observable behavior and contracts before edits. For generated/vendor/third-party files, identify and migrate the owning source instead of patching dependency code.\n2. Build a requirement inventory for the target and anticipated affected files from the current originals and coverage map. Include banned-pattern absence checks. Fix applicable existing violations throughout the **whole specified file**, not only touched lines. Distinguish unrelated repository violations. Check existing barrels before imports and choose the narrowest owner for logic, contracts, constants, and copy.\n3. Make the smallest coherent change set that achieves full compliance. Update companion templates/styles, callers, types, barrels, selectors, and tests when necessary. Preserve stable legacy forms unless substantially refactoring the form; then use Signal Forms and the application-owned third-party CVA compatibility boundary. Avoid unrelated cosmetic rewrites.\n4. Before editing **each** file, classify it and read every applicable standards document. Revisit the exact changed-file set as it grows. Review every changed file independently; for a component, review template and SCSS even if unchanged. Avoid mechanical changes to lifecycle, reactive state, request races, query serialization, icon sizing, accessibility, or layout.\n5. Validate in layers: focused lint, formatting checks, types, and meaningful tests where supported, then build and broader tests when needed to establish preserved behavior. For UI changes, visually inspect relevant states and responsive layouts. From `prospect-analyzer-ui/`, run `node scripts/check-angular22-standards.mjs` with the **exact changed `src/...` `.ts`, `.html`, and `.svg` paths**; it ignores other extensions, so manually audit SCSS. Confirm the CLI actually accepted the intended files. Use a separate no-argument scan when useful to identify pre-existing repository-wide failures. Review warnings manually. For backend files use focused pytest, Black/isort checks, configured typing checks, and relevant integration tests.\n6. Inspect final diff, imports/exports, affected callers, test names, and exact changed-file list. Rerun failed gates after fixes. Confirm checker-supported paths were accepted by the command; if no supported paths exist, record the checker as N/A. Do not claim complete compliance while an applicable rule or behavior check remains unverified. If a gate cannot run, explain why and what evidence substitutes. If a real violation remains, keep working or report the migration as incomplete.\n\n## Completion report\n\nReport the specified file, all related changed files, preserved behavior, and a **per-file pass/fail matrix** naming applicable standards documents, manual review, checker result or N/A, focused lint/format/type/test results, and limitations. Separate current-change failures from pre-existing repository-wide failures. Include visual verification for UI work. Do not stage, commit, or push; Git is inspection-only. Do not change protected standards files, credentials, `.env` files, or Terraform secrets/state.", "rawSkillMd": "---\nname: prospect-standards-migrate\ndescription: Fully migrate a specified Prospect Analyzer file to current project coding standards, preserving behavior and verifying all affected files. Use for standards migrations, not ordinary narrow edits.\n---\n\n# Prospect standards migration\n\nMigrate the user's specified file to complete compliance with all applicable current repository standards, including necessary companion files and callers. A formatter or checker pass alone is never a complete migration. Preserve functionality, business rules, public contracts, accessibility, SSR behavior, and visual behavior; if a standard requires a behavior change, make the smallest compatible change and verify it.\n\n## Definition of done\n\nA migration is complete only when the specified file and every necessary companion file have been reviewed independently, existing behavior and contracts have been verified, focused validation has passed, and the final report separates current-change failures from pre-existing repository failures. An empty filtered standards-check invocation is not a pass.\n\n## Authority and scope\n\nLocate the root containing `AGENTS.md`, `CODE-STANDARD/`, `prospect-analyzer-ui/`, and `prospect-analyzer-core/`. Before editing, read `AGENTS.md`, `CODE-STANDARD/INDEX.md`, and the **complete current text of every applicable document** in `CODE-STANDARD/`. Read relevant configurations and nearby patterns too. Do not rely on this skill's summary in place of the originals. Use local `CODE-STANDARD/` documents as the source of truth. Use [references/coverage.md](references/coverage.md) as the audit map and include any newly added standards documents. Where prose, examples, the checker, or existing code disagree, follow `AGENTS.md` and the normative standards prose, resolving ambiguity from context. Never relax protected standards scripts, config, or allowlists to make a migration pass.\n\n## Workflow\n\n1. Resolve the exact path and owner: Angular feature/core/shared/server, FastAPI API/core/models/services/tests, asset, or configuration. Inspect Git status in the relevant independently versioned application and preserve unrelated user changes. Read the entire target, direct companions (component template, SCSS, test, constants, interfaces, barrels), relevant callers, and focused tests. Record observable behavior and contracts before edits. For generated/vendor/third-party files, identify and migrate the owning source instead of patching dependency code.\n2. Build a requirement inventory for the target and anticipated affected files from the current originals and coverage map. Include banned-pattern absence checks. Fix applicable existing violations throughout the **whole specified file**, not only touched lines. Distinguish unrelated repository violations. Check existing barrels before imports and choose the narrowest owner for logic, contracts, constants, and copy.\n3. Make the smallest coherent change set that achieves full compliance. Update companion templates/styles, callers, types, barrels, selectors, and tests when necessary. Preserve stable legacy forms unless substantially refactoring the form; then use Signal Forms and the application-owned third-party CVA compatibility boundary. Avoid unrelated cosmetic rewrites.\n4. Before editing **each** file, classify it and read every applicable standards document. Revisit the exact changed-file set as it grows. Review every changed file independently; for a component, review template and SCSS even if unchanged. Avoid mechanical changes to lifecycle, reactive state, request races, query serialization, icon sizing, accessibility, or layout.\n5. Validate in layers: focused lint, formatting checks, types, and meaningful tests where supported, then build and broader tests when needed to establish preserved behavior. For UI changes, visually inspect relevant states and responsive layouts. From `prospect-analyzer-ui/`, run `node scripts/check-angular22-standards.mjs` with the **exact changed `src/...` `.ts`, `.html`, and `.svg` paths**; it ignores other extensions, so manually audit SCSS. Confirm the CLI actually accepted the intended files. Use a separate no-argument scan when useful to identify pre-existing repository-wide failures. Review warnings manually. For backend files use focused pytest, Black/isort checks, configured typing checks, and relevant integration tests.\n6. Inspect final diff, imports/exports, affected callers, test names, and exact changed-file list. Rerun failed gates after fixes. Confirm checker-supported paths were accepted by the command; if no supported paths exist, record the checker as N/A. Do not claim complete compliance while an applicable rule or behavior check remains unverified. If a gate cannot run, explain why and what evidence substitutes. If a real violation remains, keep working or report the migration as incomplete.\n\n## Completion report\n\nReport the specified file, all related changed files, preserved behavior, and a **per-file pass/fail matrix** naming applicable standards documents, manual review, checker result or N/A, focused lint/format/type/test results, and limitations. Separate current-change failures from pre-existing repository-wide failures. Include visual verification for UI work. Do not stage, commit, or push; Git is inspection-only. Do not change protected standards files, credentials, `.env` files, or Terraform secrets/state.\n", "totalLines": 49, "fileCount": 2, "files": [{"name": "SKILL.md", "path": "skills/prospect-standards-migrate/SKILL.md", "content": "---\nname: prospect-standards-migrate\ndescription: Fully migrate a specified Prospect Analyzer file to current project coding standards, preserving behavior and verifying all affected files. Use for standards migrations, not ordinary narrow edits.\n---\n\n# Prospect standards migration\n\nMigrate the user's specified file to complete compliance with all applicable current repository standards, including necessary companion files and callers. A formatter or checker pass alone is never a complete migration. Preserve functionality, business rules, public contracts, accessibility, SSR behavior, and visual behavior; if a standard requires a behavior change, make the smallest compatible change and verify it.\n\n## Definition of done\n\nA migration is complete only when the specified file and every necessary companion file have been reviewed independently, existing behavior and contracts have been verified, focused validation has passed, and the final report separates current-change failures from pre-existing repository failures. An empty filtered standards-check invocation is not a pass.\n\n## Authority and scope\n\nLocate the root containing `AGENTS.md`, `CODE-STANDARD/`, `prospect-analyzer-ui/`, and `prospect-analyzer-core/`. Before editing, read `AGENTS.md`, `CODE-STANDARD/INDEX.md`, and the **complete current text of every applicable document** in `CODE-STANDARD/`. Read relevant configurations and nearby patterns too. Do not rely on this skill's summary in place of the originals. Use local `CODE-STANDARD/` documents as the source of truth. Use [references/coverage.md](references/coverage.md) as the audit map and include any newly added standards documents. Where prose, examples, the checker, or existing code disagree, follow `AGENTS.md` and the normative standards prose, resolving ambiguity from context. Never relax protected standards scripts, config, or allowlists to make a migration pass.\n\n## Workflow\n\n1. Resolve the exact path and owner: Angular feature/core/shared/server, FastAPI API/core/models/services/tests, asset, or configuration. Inspect Git status in the relevant independently versioned application and preserve unrelated user changes. Read the entire target, direct companions (component template, SCSS, test, constants, interfaces, barrels), relevant callers, and focused tests. Record observable behavior and contracts before edits. For generated/vendor/third-party files, identify and migrate the owning source instead of patching dependency code.\n2. Build a requirement inventory for the target and anticipated affected files from the current originals and coverage map. Include banned-pattern absence checks. Fix applicable existing violations throughout the **whole specified file**, not only touched lines. Distinguish unrelated repository violations. Check existing barrels before imports and choose the narrowest owner for logic, contracts, constants, and copy.\n3. Make the smallest coherent change set that achieves full compliance. Update companion templates/styles, callers, types, barrels, selectors, and tests when necessary. Preserve stable legacy forms unless substantially refactoring the form; then use Signal Forms and the application-owned third-party CVA compatibility boundary. Avoid unrelated cosmetic rewrites.\n4. Before editing **each** file, classify it and read every applicable standards document. Revisit the exact changed-file set as it grows. Review every changed file independently; for a component, review template and SCSS even if unchanged. Avoid mechanical changes to lifecycle, reactive state, request races, query serialization, icon sizing, accessibility, or layout.\n5. Validate in layers: focused lint, formatting checks, types, and meaningful tests where supported, then build and broader tests when needed to establish preserved behavior. For UI changes, visually inspect relevant states and responsive layouts. From `prospect-analyzer-ui/`, run `node scripts/check-angular22-standards.mjs` with the **exact changed `src/...` `.ts`, `.html`, and `.svg` paths**; it ignores other extensions, so manually audit SCSS. Confirm the CLI actually accepted the intended files. Use a separate no-argument scan when useful to identify pre-existing repository-wide failures. Review warnings manually. For backend files use focused pytest, Black/isort checks, configured typing checks, and relevant integration tests.\n6. Inspect final diff, imports/exports, affected callers, test names, and exact changed-file list. Rerun failed gates after fixes. Confirm checker-supported paths were accepted by the command; if no supported paths exist, record the checker as N/A. Do not claim complete compliance while an applicable rule or behavior check remains unverified. If a gate cannot run, explain why and what evidence substitutes. If a real violation remains, keep working or report the migration as incomplete.\n\n## Completion report\n\nReport the specified file, all related changed files, preserved behavior, and a **per-file pass/fail matrix** naming applicable standards documents, manual review, checker result or N/A, focused lint/format/type/test results, and limitations. Separate current-change failures from pre-existing repository-wide failures. Include visual verification for UI work. Do not stage, commit, or push; Git is inspection-only. Do not change protected standards files, credentials, `.env` files, or Terraform secrets/state.\n", "lines": 29, "sizeBytes": 5408}, {"name": "references/coverage.md", "path": "skills/prospect-standards-migrate/references/coverage.md", "content": "# Standards coverage map\n\nThis is an audit aid. Read each applicable original document in `CODE-STANDARD/` during every migration; its current text takes precedence. Classify every changed file, including new files and barrels. The requested file must be fully compliant, not merely its edited lines.\n\n| Document | Applicable requirements to audit |\n| --- | --- |\n| `INDEX.md` | Master map and mandatory checklist; discover new documents. |\n| `angular-v22-standalone.md` | Standalone components/directives/pipes; no `NgModule` or `standalone: false`; `OnPush` from `AGENTS.md`; local signals/computed and no local-state `BehaviorSubject`; public readonly signal inputs/outputs, protected internal template state; native `@if`/`@else`/`@for`/`@switch` with unique tracking; field `inject()`; new/substantially refactored forms use Signal Forms model/schema/`FormField`/`[formField]`/`submit()` as applicable; third-party CVA through application `SignalFormControl` compat boundary and template compilation, no package modifications; compatible legacy forms strictly typed, no untyped controls; Emulated encapsulation and no global feature overrides; `withLoading` for HTTP loading signals. |\n| `typescript-class-standards.md` | Injected services first; component groups ordered services, inputs/outputs, state, constructor, lifecycle, UI handlers, API/data methods; explicit visibility, public component API, protected template members, private helpers; camelCase/accurate names, service private `_` prefix versus component injected service without `_`; signal input/output, no legacy decorators; explicit function/method/arrow return types; no `any`/`object`; split complex methods and constructor effects; interfaces/type aliases/models in owning `interfaces/` or shared `core/models`, runtime values in owning `constants/`; type-only third-party contract imports, readonly immutable contracts/collections, nearest public barrels. Favor normative prose where examples conflict. |\n| `clean-code-guidelines.md` | Truthy `.length` rather than `> 0`; concise one-expression guards; early returns/reduced nesting; typed parameter object for multi-parameter domain model constructors; `const` default, `let` only when reassigned, no `var`; initialized primitives with inferred simple types; consistent primitive types. Preserve semantics and formatter compatibility. |\n| `jsdoc-documentation.md` | Descriptive JSDoc on each class property; each method has matching visibility tag and meaningful `@description` covering purpose/effects/business logic; `@param` for each parameter, optional marker when needed, no type braces; `@returns` on non-void methods, none on `void`/`Promise<void>`; document exported reusable functions. Assess meaning manually. |\n| `tailwind-scss-bem.md` | First component SCSS rule `:host { @apply block; }`; `@apply` for new/substantially changed visual rules; BEM semantic selectors and nesting depth at most two beyond block; only small structural utility classes in templates, visual styles in SCSS; no `::ng-deep`, `/deep/`, `>>>`, or `!important`; theme colors first, raw hex only when unavailable with required comment immediately above; no one-off Tailwind palette changes; documented scoped complex shell/layout raw-SCSS exception while retaining host/BEM/theme rules. |\n| `html-template-architecture.md` | Native button or approved accessible design-system action control (`ntv-button` API), with name/keyboard/focus/disabled semantics; no clickable div/span or unapproved controls; Bootstrap `.row` directly parents `.col-*`; stable labels/messages/button/table/visual configuration in nearest `constants/<name>.constant.ts` and `constants/index.ts`, no service-owned user copy, map typed status to rendering-feature copy, shared constants only for real unrelated-feature consumers; repeated binding logic extracted to computed/variable; E2E `data-testid` bound in `component-element` kebab-case and item identifiers for lists. |\n| `svg-icon-standards.md` | SVG icons through `<app-svg-icon>`; no `[innerHTML]` icons or extra sizing span; `IconService.getIconMap([...])`; supported size/host dimensions and `className`; parent SCSS `app-svg-icon.my-class`, overrides only color/margin/layout except justified header case; SVG assets in `src/assets/icons/` or `src/assets/images/`. |\n| `query-builder-standards.md` | HTTP query serialization via `buildQueryParams(params)` from `@shared`; extend `BaseQueryParams` in `@shared/interfaces` with optional fields without removing existing ones; preserve API behavior. |\n| `async-race-prevention.md` | Private monotonic request counter; increment on every repeatable trigger; compare after **every** await/promise resolution before side effects; increment on cancellation; ensure stale request cannot overwrite loading/error/current data. |\n| `project-structure-migration.md` | Page-only component in page `components/`, multi-page feature component in feature `components/`, cross-feature component in `shared/components/`; component migration covers icon binding/map, deep selectors, SVG host selectors, encapsulation/third-party styles, host/BEM/`@apply`/specificity; build and visually verify after batches; Git inspection only. |\n| `reusable-code-and-barrels.md` | Extract generally reusable pure parser/formatter/validator/normalizer to focused `shared/utils/<name>.util.ts`, JSDoc and `shared/utils/index.ts`; retain component method only for state/service/business context; nearest barrels (`@shared/components`, `@shared/utils`, `@shared/pipes`, feature), direct implementation import only if private/no barrel/documented cycle or lazy boundary; feature/domain constants ownership and service presentation separation; independent per-file and companion template/SCSS review. |\n\n`AGENTS.md` also defines application directory boundaries, aliases, bans on `console.*` and deep relative imports, Angular `*.spec.ts` and Python `test_*.py` naming, focused tests before broad suites, exact-path checker invocation, per-file reporting, and protected-file/security/Git limits. The checker covers selected TS/HTML/SVG patterns only. It can exit successfully with an empty filtered CLI file set, so confirm intended files were accepted. Manual review remains mandatory.\n", "lines": 20, "sizeBytes": 6245}]}, {"id": "prospect-standards-review", "name": "prospect-standards-review", "category": "Prospect & Architecture", "description": "Review a Prospect Analyzer implementation against the user request, repository standards, tests, contracts, security, and final validation without changing files unless explicitly requested.", "body": "# Review Prospect Analyzer changes\n\nPerform a review, not an implementation. Do not edit files, stage changes, or\ncommit unless the user explicitly asks for fixes. If a fix is requested, use\n`prospect-standards-implement` for the implementation after documenting the\nfinding.\n\n## Review workflow\n\n1. Find the workspace root containing `AGENTS.md`, `CODE-STANDARD/`,\n   `prospect-analyzer-ui/`, and `prospect-analyzer-core/`.\n2. Inspect Git status and the exact diff or user-specified change set. Preserve\n   unrelated user work and do not review generated output as source.\n3. Read `AGENTS.md`, `CODE-STANDARD/INDEX.md`, and the complete applicable\n   standards documents before judging a file.\n4. Compare the implementation against both the user's requested behavior and\n   the standards. Check callers, contracts, companion templates/styles/tests,\n   barrels, constants, accessibility, SSR, security, and async race safety.\n5. Run focused validation when it is safe and relevant. For Angular, pass the\n   exact changed `.ts`, `.html`, and `.svg` paths to the standards checker and\n   confirm those paths were accepted. Treat empty filtered input as `N/A`, not\n   as a pass.\n\n## Report\n\nReport findings first, ordered by severity:\n\n- **Blocker:** security issue, broken public contract, data loss, or failure of\n  the requested behavior.\n- **Major:** standards violation, race condition, accessibility regression, or\n  missing behavior test on a critical path.\n- **Minor:** maintainability, documentation, or non-critical validation gap.\n\nEach finding must include the file and line, evidence, impact, and a concrete\nrecommendation. End with a per-file pass/fail matrix covering standards,\nmanual review, checker status, focused validation, and limitations. Separate\npre-existing failures from current-change findings.", "rawSkillMd": "---\nname: prospect-standards-review\ndescription: Review a Prospect Analyzer implementation against the user request, repository standards, tests, contracts, security, and final validation without changing files unless explicitly requested.\n---\n\n# Review Prospect Analyzer changes\n\nPerform a review, not an implementation. Do not edit files, stage changes, or\ncommit unless the user explicitly asks for fixes. If a fix is requested, use\n`prospect-standards-implement` for the implementation after documenting the\nfinding.\n\n## Review workflow\n\n1. Find the workspace root containing `AGENTS.md`, `CODE-STANDARD/`,\n   `prospect-analyzer-ui/`, and `prospect-analyzer-core/`.\n2. Inspect Git status and the exact diff or user-specified change set. Preserve\n   unrelated user work and do not review generated output as source.\n3. Read `AGENTS.md`, `CODE-STANDARD/INDEX.md`, and the complete applicable\n   standards documents before judging a file.\n4. Compare the implementation against both the user's requested behavior and\n   the standards. Check callers, contracts, companion templates/styles/tests,\n   barrels, constants, accessibility, SSR, security, and async race safety.\n5. Run focused validation when it is safe and relevant. For Angular, pass the\n   exact changed `.ts`, `.html`, and `.svg` paths to the standards checker and\n   confirm those paths were accepted. Treat empty filtered input as `N/A`, not\n   as a pass.\n\n## Report\n\nReport findings first, ordered by severity:\n\n- **Blocker:** security issue, broken public contract, data loss, or failure of\n  the requested behavior.\n- **Major:** standards violation, race condition, accessibility regression, or\n  missing behavior test on a critical path.\n- **Minor:** maintainability, documentation, or non-critical validation gap.\n\nEach finding must include the file and line, evidence, impact, and a concrete\nrecommendation. End with a per-file pass/fail matrix covering standards,\nmanual review, checker status, focused validation, and limitations. Separate\npre-existing failures from current-change findings.\n", "totalLines": 42, "fileCount": 1, "files": [{"name": "SKILL.md", "path": "skills/prospect-standards-review/SKILL.md", "content": "---\nname: prospect-standards-review\ndescription: Review a Prospect Analyzer implementation against the user request, repository standards, tests, contracts, security, and final validation without changing files unless explicitly requested.\n---\n\n# Review Prospect Analyzer changes\n\nPerform a review, not an implementation. Do not edit files, stage changes, or\ncommit unless the user explicitly asks for fixes. If a fix is requested, use\n`prospect-standards-implement` for the implementation after documenting the\nfinding.\n\n## Review workflow\n\n1. Find the workspace root containing `AGENTS.md`, `CODE-STANDARD/`,\n   `prospect-analyzer-ui/`, and `prospect-analyzer-core/`.\n2. Inspect Git status and the exact diff or user-specified change set. Preserve\n   unrelated user work and do not review generated output as source.\n3. Read `AGENTS.md`, `CODE-STANDARD/INDEX.md`, and the complete applicable\n   standards documents before judging a file.\n4. Compare the implementation against both the user's requested behavior and\n   the standards. Check callers, contracts, companion templates/styles/tests,\n   barrels, constants, accessibility, SSR, security, and async race safety.\n5. Run focused validation when it is safe and relevant. For Angular, pass the\n   exact changed `.ts`, `.html`, and `.svg` paths to the standards checker and\n   confirm those paths were accepted. Treat empty filtered input as `N/A`, not\n   as a pass.\n\n## Report\n\nReport findings first, ordered by severity:\n\n- **Blocker:** security issue, broken public contract, data loss, or failure of\n  the requested behavior.\n- **Major:** standards violation, race condition, accessibility regression, or\n  missing behavior test on a critical path.\n- **Minor:** maintainability, documentation, or non-critical validation gap.\n\nEach finding must include the file and line, evidence, impact, and a concrete\nrecommendation. End with a per-file pass/fail matrix covering standards,\nmanual review, checker status, focused validation, and limitations. Separate\npre-existing failures from current-change findings.\n", "lines": 42, "sizeBytes": 2065}]}, {"id": "session-handoff", "name": "session-handoff", "category": "Session Continuity", "description": "Manage session continuity across chats. Generates a clean HANDOFF.md before starting a new chat or resumes work from an existing HANDOFF.md without context rot.", "body": "# Session Handoff & Continuity\n\nUse this skill when preparing to switch to a fresh chat session or when resuming a project from a previous session's handoff file. This avoids context rot, token exhaustion, and lost instructions.\n\n## Modes of Operation\n\n### 1. Export Mode (Ending a session)\nTriggered when the user asks to save state, prepare a handoff, switch to a new session, or says `@session-handoff export`.\n\n**Workflow:**\n1. Inspect Git status, recent diffs, and the current conversation progress.\n2. Create or overwrite `HANDOFF.md` at the root of the active workspace.\n3. Use the exact template structure below. Keep it concise, high-signal, and factual:\n   - **Do not** write speculative next steps; only document real pending work.\n   - **Do not** preserve dead ends or abandoned debugging attempts—only record what works and what to avoid.\n4. Output a brief confirmation showing where `HANDOFF.md` was saved and what prompt to paste in the fresh chat.\n\n### 2. Resume Mode (Starting a new session)\nTriggered when the user starts a fresh chat and mentions `@session-handoff`, `resume`, or asks to continue from the handoff file.\n\n**Workflow:**\n1. Read `HANDOFF.md` from the project root.\n2. Confirm the current workspace matches the documented branch, changed files, and environment.\n3. Report the goal, the current status, and propose executing **Step 1** of the immediate next steps.\n4. Wait for user confirmation or proceed directly if explicitly instructed.\n\n---\n\n## Required `HANDOFF.md` Structure\n\n```markdown\n# Session Handoff: [Feature / Task Name]\n\n**Date:** [ISO Date or YYYY-MM-DD]  \n**Branch:** [Active Git branch]  \n**Primary Goal:** [One clear sentence describing the ultimate objective]\n\n---\n\n## 1. Current State & Deliverables\n- [x] [Completed item with relative file paths]\n- [ ] [In-progress item with current status]\n- [ ] [Pending deliverable]\n\n## 2. Key Architecture & Design Decisions\n- **Decision:** [e.g. Using Signal Forms instead of ReactiveForms]\n  - *Rationale:* [Brief technical reason or standard reference]\n- **Decision:** [e.g. Preserved BFF contract in src/server/]\n  - *Rationale:* [Why this approach was chosen over alternatives]\n\n## 3. Discarded Approaches (What NOT to do)\n- [Briefly state failed or rejected approaches so the next session does not re-attempt them]\n\n## 4. Immediate Next Steps (Prioritized)\n1. **[Next Action 1]**: [Specific file and implementation detail]\n2. **[Next Action 2]**: [Verification check or follow-up task]\n\n## 5. Verification Commands\n```bash\n# Focused check commands relevant to this task\n[e.g. npm test / npm run validate / poetry run test]\n```\n```", "rawSkillMd": "---\nname: session-handoff\ndescription: Manage session continuity across chats. Generates a clean HANDOFF.md before starting a new chat or resumes work from an existing HANDOFF.md without context rot.\n---\n\n# Session Handoff & Continuity\n\nUse this skill when preparing to switch to a fresh chat session or when resuming a project from a previous session's handoff file. This avoids context rot, token exhaustion, and lost instructions.\n\n## Modes of Operation\n\n### 1. Export Mode (Ending a session)\nTriggered when the user asks to save state, prepare a handoff, switch to a new session, or says `@session-handoff export`.\n\n**Workflow:**\n1. Inspect Git status, recent diffs, and the current conversation progress.\n2. Create or overwrite `HANDOFF.md` at the root of the active workspace.\n3. Use the exact template structure below. Keep it concise, high-signal, and factual:\n   - **Do not** write speculative next steps; only document real pending work.\n   - **Do not** preserve dead ends or abandoned debugging attempts—only record what works and what to avoid.\n4. Output a brief confirmation showing where `HANDOFF.md` was saved and what prompt to paste in the fresh chat.\n\n### 2. Resume Mode (Starting a new session)\nTriggered when the user starts a fresh chat and mentions `@session-handoff`, `resume`, or asks to continue from the handoff file.\n\n**Workflow:**\n1. Read `HANDOFF.md` from the project root.\n2. Confirm the current workspace matches the documented branch, changed files, and environment.\n3. Report the goal, the current status, and propose executing **Step 1** of the immediate next steps.\n4. Wait for user confirmation or proceed directly if explicitly instructed.\n\n---\n\n## Required `HANDOFF.md` Structure\n\n```markdown\n# Session Handoff: [Feature / Task Name]\n\n**Date:** [ISO Date or YYYY-MM-DD]  \n**Branch:** [Active Git branch]  \n**Primary Goal:** [One clear sentence describing the ultimate objective]\n\n---\n\n## 1. Current State & Deliverables\n- [x] [Completed item with relative file paths]\n- [ ] [In-progress item with current status]\n- [ ] [Pending deliverable]\n\n## 2. Key Architecture & Design Decisions\n- **Decision:** [e.g. Using Signal Forms instead of ReactiveForms]\n  - *Rationale:* [Brief technical reason or standard reference]\n- **Decision:** [e.g. Preserved BFF contract in src/server/]\n  - *Rationale:* [Why this approach was chosen over alternatives]\n\n## 3. Discarded Approaches (What NOT to do)\n- [Briefly state failed or rejected approaches so the next session does not re-attempt them]\n\n## 4. Immediate Next Steps (Prioritized)\n1. **[Next Action 1]**: [Specific file and implementation detail]\n2. **[Next Action 2]**: [Verification check or follow-up task]\n\n## 5. Verification Commands\n```bash\n# Focused check commands relevant to this task\n[e.g. npm test / npm run validate / poetry run test]\n```\n```\n", "totalLines": 68, "fileCount": 1, "files": [{"name": "SKILL.md", "path": "skills/session-handoff/SKILL.md", "content": "---\nname: session-handoff\ndescription: Manage session continuity across chats. Generates a clean HANDOFF.md before starting a new chat or resumes work from an existing HANDOFF.md without context rot.\n---\n\n# Session Handoff & Continuity\n\nUse this skill when preparing to switch to a fresh chat session or when resuming a project from a previous session's handoff file. This avoids context rot, token exhaustion, and lost instructions.\n\n## Modes of Operation\n\n### 1. Export Mode (Ending a session)\nTriggered when the user asks to save state, prepare a handoff, switch to a new session, or says `@session-handoff export`.\n\n**Workflow:**\n1. Inspect Git status, recent diffs, and the current conversation progress.\n2. Create or overwrite `HANDOFF.md` at the root of the active workspace.\n3. Use the exact template structure below. Keep it concise, high-signal, and factual:\n   - **Do not** write speculative next steps; only document real pending work.\n   - **Do not** preserve dead ends or abandoned debugging attempts—only record what works and what to avoid.\n4. Output a brief confirmation showing where `HANDOFF.md` was saved and what prompt to paste in the fresh chat.\n\n### 2. Resume Mode (Starting a new session)\nTriggered when the user starts a fresh chat and mentions `@session-handoff`, `resume`, or asks to continue from the handoff file.\n\n**Workflow:**\n1. Read `HANDOFF.md` from the project root.\n2. Confirm the current workspace matches the documented branch, changed files, and environment.\n3. Report the goal, the current status, and propose executing **Step 1** of the immediate next steps.\n4. Wait for user confirmation or proceed directly if explicitly instructed.\n\n---\n\n## Required `HANDOFF.md` Structure\n\n```markdown\n# Session Handoff: [Feature / Task Name]\n\n**Date:** [ISO Date or YYYY-MM-DD]  \n**Branch:** [Active Git branch]  \n**Primary Goal:** [One clear sentence describing the ultimate objective]\n\n---\n\n## 1. Current State & Deliverables\n- [x] [Completed item with relative file paths]\n- [ ] [In-progress item with current status]\n- [ ] [Pending deliverable]\n\n## 2. Key Architecture & Design Decisions\n- **Decision:** [e.g. Using Signal Forms instead of ReactiveForms]\n  - *Rationale:* [Brief technical reason or standard reference]\n- **Decision:** [e.g. Preserved BFF contract in src/server/]\n  - *Rationale:* [Why this approach was chosen over alternatives]\n\n## 3. Discarded Approaches (What NOT to do)\n- [Briefly state failed or rejected approaches so the next session does not re-attempt them]\n\n## 4. Immediate Next Steps (Prioritized)\n1. **[Next Action 1]**: [Specific file and implementation detail]\n2. **[Next Action 2]**: [Verification check or follow-up task]\n\n## 5. Verification Commands\n```bash\n# Focused check commands relevant to this task\n[e.g. npm test / npm run validate / poetry run test]\n```\n```\n", "lines": 68, "sizeBytes": 2836}]}]};
+    /* __SKILLS_MANIFEST_END__ */
+  </script>
+
+  <!-- Main Application Logic -->
   <script>
     function skillsApp() {
       return {
         searchQuery: '',
         selectedCategory: 'All',
+        selectedTarget: 'all',
         activeModal: null,
-        activeModalRendered: '',
+        activeFile: null,
+        activeFileRendered: '',
+        viewMode: 'rendered',
+        showArchModal: false,
         copiedId: null,
         categories: ['All', 'Prospect & Architecture', 'Git & Versioning', 'Session Continuity'],
-        skills: [
-          {
-            id: 'git-commit-message',
-            name: 'git-commit-message',
-            category: 'Git & Versioning',
-            description: 'Generate one clear Conventional Commit message and non-technical bullet summary from current changes without staging, committing, or pushing.',
-            content: `### Workflow
-1. Inspect git status and relevant diffs.
-2. Identify primary user-visible purpose.
-3. Choose exact Conventional Commit type.
-4. Output concise imperative summary with plain-language bullet points.`
-          },
-          {
-            id: 'prospect-standards-implement',
-            name: 'prospect-standards-implement',
-            category: 'Prospect & Architecture',
-            description: 'Implement a requested feature, fix, or code change in Prospect Analyzer while applying its current coding standards to every new or modified file.',
-            content: `### Guidelines
-- Angular 22 standalone OnPush components & signals.
-- FastAPI typed Pydantic models & service separation.
-- Definition-of-done gates & strict barrel export resolutions.`
-          },
-          {
-            id: 'prospect-standards-migrate',
-            name: 'prospect-standards-migrate',
-            category: 'Prospect & Architecture',
-            description: 'Fully migrate a specified Prospect Analyzer file to current project coding standards, preserving behavior and verifying all affected files.',
-            content: `### Migration Scope
-- Audit whole files against CODE-STANDARD/ guidelines.
-- Preserves business rules, SSR behavior, accessibility, and public API contracts.
-- Uses references/coverage.md for requirement inventory.`
-          },
-          {
-            id: 'prospect-standards-review',
-            name: 'prospect-standards-review',
-            category: 'Prospect & Architecture',
-            description: 'Review a Prospect Analyzer implementation against the user request, repository standards, tests, contracts, security, and final validation.',
-            content: `### Severity Levels
-- **Blocker:** security issues, broken public contracts, or data loss.
-- **Major:** standards violations, race conditions, or missing tests.
-- **Minor:** maintainability, docs, or non-critical formatting gaps.`
-          },
-          {
-            id: 'session-handoff',
-            name: 'session-handoff',
-            category: 'Session Continuity',
-            description: 'Manage session continuity across chats. Generates a clean HANDOFF.md before starting a new chat or resumes work without context rot.',
-            content: `### Operations
-- **Export Mode (@session-handoff export):** Extracts active state, decisions, and immediate next steps into project-root HANDOFF.md.
-- **Resume Mode (@session-handoff resume):** Ingests HANDOFF.md at turn 1 of a fresh chat session.`
-          }
+        installTargets: [
+          { id: 'all', label: 'All Agents', desc: 'Links Antigravity + OpenCode + syncs UI', dest: 'Global + UI', cmd: './install.sh --all' },
+          { id: 'antigravity', label: 'Antigravity', desc: 'Global Gemini / Antigravity IDE', dest: '~/.gemini/config/skills', cmd: './install.sh --global' },
+          { id: 'opencode', label: 'OpenCode', desc: 'Global OpenCode v2 CLI', dest: '~/.config/opencode/skills', cmd: './install.sh --opencode' },
+          { id: 'claude', label: 'Claude', desc: 'Global Claude Code CLI', dest: '~/.claude/skills', cmd: './install.sh --claude' },
+          { id: 'project', label: 'Project', desc: 'Link into a specific workspace', dest: '<dir>/.agents/skills', cmd: './install.sh --project /path/to/repo' }
         ],
+        skills: [],
+
+        get currentTargetObj() {
+          return this.installTargets.find(t => t.id === this.selectedTarget) || this.installTargets[0];
+        },
+
+        get totalLinesCount() {
+          return this.skills.reduce((acc, s) => acc + (s.totalLines || 0), 0);
+        },
+
+        get totalFilesCount() {
+          return this.skills.reduce((acc, s) => acc + (s.fileCount || 1), 0);
+        },
+
         get filteredSkills() {
+          const q = this.searchQuery.toLowerCase().trim();
           return this.skills.filter(s => {
             const matchesCat = this.selectedCategory === 'All' || s.category === this.selectedCategory;
-            const matchesSearch = s.name.toLowerCase().includes(this.searchQuery.toLowerCase()) || 
-                                  s.description.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
-                                  s.category.toLowerCase().includes(this.searchQuery.toLowerCase());
-            return matchesCat && matchesSearch;
+            if (!q) return matchesCat;
+            const inMeta = s.name.toLowerCase().includes(q) ||
+                           s.description.toLowerCase().includes(q) ||
+                           s.category.toLowerCase().includes(q);
+            const inFiles = (s.files || []).some(f => f.content.toLowerCase().includes(q) || f.name.toLowerCase().includes(q));
+            return matchesCat && (inMeta || inFiles);
           });
         },
+
+        getCategoryCount(cat) {
+          if (cat === 'All') return this.skills.length;
+          return this.skills.filter(s => s.category === cat).length;
+        },
+
+        focusSearch() {
+          this.$refs.searchInput?.focus();
+        },
+
         openModal(skill) {
           this.activeModal = skill;
-          this.activeModalRendered = marked.parse(skill.content);
+          this.viewMode = 'rendered';
+          const firstFile = (skill.files && skill.files.length > 0) ? skill.files[0] : { name: 'SKILL.md', content: skill.body || '' };
+          this.selectFile(firstFile);
+        },
+
+        selectFile(file) {
+          this.activeFile = file;
+          let md = file.content || '';
+          if (file.name === 'SKILL.md') {
+            md = md.replace(/^---\s*\n[\s\S]*?\n---\s*\n?/, '');
+          }
+          this.activeFileRendered = marked.parse(md);
           this.$nextTick(() => lucide.createIcons());
         },
+
         closeModal() {
           this.activeModal = null;
+          this.showArchModal = false;
         },
+
         copyText(text, id) {
           navigator.clipboard.writeText(text);
           this.copiedId = id;
@@ -380,7 +651,22 @@
             if (this.copiedId === id) this.copiedId = null;
           }, 2000);
         },
-        initApp() {
+
+        async initApp() {
+          if (window.__SKILLS_MANIFEST__ && window.__SKILLS_MANIFEST__.skills) {
+            this.skills = window.__SKILLS_MANIFEST__.skills;
+          }
+          try {
+            const res = await fetch('./skills-manifest.json', { cache: 'no-store' });
+            if (res.ok) {
+              const data = await res.json();
+              if (data && Array.isArray(data.skills)) {
+                this.skills = data.skills;
+              }
+            }
+          } catch (_) {
+            // Uses embedded window.__SKILLS_MANIFEST__ when opened via file://
+          }
           this.$nextTick(() => lucide.createIcons());
         }
       }

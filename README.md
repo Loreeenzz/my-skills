@@ -1,11 +1,18 @@
 # my-skills
 
-A centralized, version-controlled collection of custom AI agent skills compatible with **Google Antigravity**, **Claude Code**, **OpenCode**, and **Cursor**.
+A centralized, version-controlled collection of custom AI agent skills and interactive web showcase compatible with **Google Antigravity**, **OpenCode**, **Claude Code**, and **Cursor**.
+
+🌐 **Live Web Showcase:** [https://loreeenzz.github.io/my-skills/](https://loreeenzz.github.io/my-skills/)
 
 ## Repository Structure
 
 ```text
 my-skills/
+├── index.html                  # Interactive Dark-Mode Web Showcase (GitHub Pages)
+├── skills-manifest.json        # Auto-generated full skill & reference manifest
+├── install.sh                  # Multi-agent symlink & UI sync CLI
+├── scripts/
+│   └── sync-ui.py              # Auto-compiles skills/* into skills-manifest.json & index.html
 ├── skills/
 │   ├── git-commit-message/
 │   │   └── SKILL.md
@@ -19,7 +26,6 @@ my-skills/
 │   │   └── SKILL.md
 │   └── session-handoff/
 │       └── SKILL.md
-├── install.sh
 └── README.md
 ```
 
@@ -28,46 +34,27 @@ my-skills/
 - **`session-handoff`**: Manages session continuity across chats. Generates a structured `HANDOFF.md` before starting a fresh chat, or resumes work instantly without context rot.
 - **`git-commit-message`**: Evaluates git changes and generates clean, concise Conventional Commit messages and bullet summaries (advisory only).
 - **`prospect-standards-implement`**: Implements features and bug fixes against Prospect Analyzer architecture and coding standards (Angular 22 OnPush/Signals, FastAPI, BEM/Tailwind).
-- **`prospect-standards-migrate`**: Fully migrates existing files to complete repository coding standards compliance.
+- **`prospect-standards-migrate`**: Fully migrates existing files to complete repository coding standards compliance (includes `references/coverage.md`).
 - **`prospect-standards-review`**: Performs read-only code review verifying implementations against standards, accessibility, contracts, and tests.
 
-## Installation & Syncing
+## Installation & Syncing (`./install.sh`)
 
-### 1. Global Installation (Antigravity / Gemini)
-Symlink all skills to your user configuration (`~/.gemini/config/skills`):
 ```bash
-./install.sh
-# or explicitly:
+# Install to ALL global agents (Antigravity + OpenCode) & sync UI manifest
+./install.sh --all
+
+# Install only to Antigravity / Gemini (~/.gemini/config/skills)
 ./install.sh --global
-```
 
-### 2. Project-Specific Installation
-Symlink into any project repository so your workspace agent picks it up under `<project>/.agents/skills`:
-```bash
+# Install only to OpenCode (~/.config/opencode/skills)
+./install.sh --opencode
+
+# Install into a specific project workspace (<DIR>/.agents/skills)
 ./install.sh --project /path/to/your/project
+
+# Check active symlinks across your machine
+./install.sh --status
+
+# Regenerate skills-manifest.json & update index.html after adding/editing skills
+./install.sh --sync-ui
 ```
-
-### 3. Claude Code & Cursor
-```bash
-# Claude Code:
-./install.sh --claude
-
-# Cursor:
-./install.sh --cursor
-```
-
-## Adding New Skills
-
-1. Create a new directory inside `skills/<skill-name>/`
-2. Add a `SKILL.md` file with the standard YAML frontmatter:
-   ```markdown
-   ---
-   name: <skill-name>
-   description: <one-line trigger summary for progressive disclosure>
-   ---
-
-   # Skill Title
-   Instructions and workflows...
-   ```
-3. Run `./install.sh` to update your links.
-4. Commit and push to GitHub!
